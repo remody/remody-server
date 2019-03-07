@@ -1,0 +1,51 @@
+type Query {
+	users(query: String): [User!]!
+}
+
+type Mutation {
+	createUser(data: CreateUserInput!): User!
+	deleteUser(id: ID!): User!
+	updateUser(id: ID!, data: UpdateUserInput!): User!
+}
+
+input CreateUserInput {
+	name: String!
+	email: String!
+	password: String!
+}
+
+input UpdateUserInput {
+	name: String
+	email: String
+}
+
+enum MutationType {
+	CREATED
+	UPDATED
+	DELETED
+}
+
+type Subscription {
+	InterpretedData: InterpretedDataSubscriptionPayload!
+}
+
+type InterpretedDataSubscriptionPayload {
+	mutation: MutationType!
+	node: InterpretedData
+}
+
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	password: String!
+	InterpretedDatas: [InterpretedData!]!
+}
+
+type InterpretedData {
+	id: ID!
+	name: String!
+	url: String!
+	description: String!
+	owner: User!
+}

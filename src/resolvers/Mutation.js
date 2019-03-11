@@ -1,11 +1,13 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const token = jwt.sign({ foo: "bar" }, process.env["REMODY_SECRET"]);
-console.log(token);
+// const token = jwt.sign({ foo: "bar" }, process.env["REMODY_SECRET"]);
+// console.log(token);
 
-const decode = jwt.decode(token, process.env["REMODY_SECRET"]);
-console.log(decode);
+// const decode = jwt.decode(token, process.env["REMODY_SECRET"]);
+// console.log(decode);
+
+console.log(process.env["REMODY_SECRET"]);
 
 const Mutation = {
 	async createUser(parent, args, { prisma }, info) {
@@ -21,17 +23,20 @@ const Mutation = {
 
 		const password = await bcrypt.hash(args.data.password, 10);
 
-		const createdUser = await prisma.mutation.createUser(
-			{
-				data: {
-					...args.data,
-					password
-				}
-			},
-			info
-		);
+		const createdUser = await prisma.mutation.createUser({
+			data: {
+				...args.data,
+				password
+			}
+		});
 
-		return createdUser;
+		return {
+			user: createdUser,
+			token: jwt.sign(
+				{ userId: createdUser.id },
+				process.env["REMODY_SECRET"]
+			)
+		};
 	},
 	async deleteUser(parent, args, { prisma }, info) {
 		const idExist = await prisma.exists.User({ id: args.id });

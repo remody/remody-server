@@ -6,9 +6,6 @@ import jwt from "jsonwebtoken";
 
 // const decode = jwt.decode(token, process.env["REMODY_SECRET"]);
 // console.log(decode);
-
-console.log(process.env["REMODY_SECRET"]);
-
 const Mutation = {
 	async createUser(parent, args, { prisma }, info) {
 		const emailTaken = await prisma.exists.User({ email: args.data.email });
@@ -34,6 +31,34 @@ const Mutation = {
 			user: createdUser,
 			token: jwt.sign(
 				{ userId: createdUser.id },
+				process.env["REMODY_SECRET"]
+			)
+		};
+	},
+	async login(parent, args, { prisma }, info) {
+		const loginUser = await prisma.query.user({
+			where: {
+				email: args.data.email
+			}
+		});
+
+		if (!loginUser) {
+			throw new Error("Unable to login");
+		}
+
+		const isMatch = await bcrypt.compare(
+			args.data.password,
+			loginUser.password
+		);
+
+		if (!isMatch) {
+			throw new Error("Invalid Password");
+		}
+
+		return {
+			user: loginUser,
+			token: jwt.sign(
+				{ userId: loginUser.id },
 				process.env["REMODY_SECRET"]
 			)
 		};

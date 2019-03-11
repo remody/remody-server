@@ -1,4 +1,11 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const token = jwt.sign({ foo: "bar" }, process.env["REMODY_SECRET"]);
+console.log(token);
+
+const decode = jwt.decode(token, process.env["REMODY_SECRET"]);
+console.log(decode);
 
 const Mutation = {
 	async createUser(parent, args, { prisma }, info) {

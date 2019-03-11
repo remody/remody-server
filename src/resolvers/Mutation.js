@@ -1,5 +1,11 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
+// const token = jwt.sign({ foo: "bar" }, process.env["REMODY_SECRET"]);
+// console.log(token);
+
+// const decode = jwt.decode(token, process.env["REMODY_SECRET"]);
+// console.log(decode);
 const Mutation = {
 	async createUser(parent, args, { prisma }, info) {
 		const emailTaken = await prisma.exists.User({ email: args.data.email });
@@ -14,17 +20,48 @@ const Mutation = {
 
 		const password = await bcrypt.hash(args.data.password, 10);
 
-		const createdUser = await prisma.mutation.createUser(
-			{
-				data: {
-					...args.data,
-					password
-				}
-			},
-			info
+		const createdUser = await prisma.mutation.createUser({
+			data: {
+				...args.data,
+				password
+			}
+		});
+
+		return {
+			user: createdUser,
+			token: jwt.sign(
+				{ userId: createdUser.id },
+				process.env["REMODY_SECRET"]
+			)
+		};
+	},
+	async login(parent, args, { prisma }, info) {
+		const loginUser = await prisma.query.user({
+			where: {
+				email: args.data.email
+			}
+		});
+
+		if (!loginUser) {
+			throw new Error("Unable to login");
+		}
+
+		const isMatch = await bcrypt.compare(
+			args.data.password,
+			loginUser.password
 		);
 
-		return createdUser;
+		if (!isMatch) {
+			throw new Error("Invalid Password");
+		}
+
+		return {
+			user: loginUser,
+			token: jwt.sign(
+				{ userId: loginUser.id },
+				process.env["REMODY_SECRET"]
+			)
+		};
 	},
 	async deleteUser(parent, args, { prisma }, info) {
 		const idExist = await prisma.exists.User({ id: args.id });

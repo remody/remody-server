@@ -3043,7 +3043,7 @@ jsonwebtoken@8.2.1:
     ms "^2.1.1"
     xtend "^4.0.1"
 
-jsonwebtoken@^8.1.0:
+jsonwebtoken@^8.1.0, jsonwebtoken@^8.5.0:
   version "8.5.0"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.5.0.tgz#ebd0ca2a69797816e1c5af65b6c759787252947e"
   dependencies:

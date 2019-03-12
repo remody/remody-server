@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 const Query = {
 	users(parent, args, { prisma }, info) {
 		const onArgs = {};
@@ -10,6 +11,11 @@ const Query = {
 			};
 		}
 		return prisma.query.users(onArgs, info);
+	},
+	me(parent, args, { prisma }, info) {
+		const { userId } = jwt.decode(args.token, process.env["REMODY_SECRET"]);
+		console.log(userId);
+		return prisma.query.user({ where: { id: userId } }, info);
 	}
 };
 

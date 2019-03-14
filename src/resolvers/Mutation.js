@@ -1,11 +1,32 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { createWriteStream } from "fs";
+import mkdirp from "mkdirp";
+import shortid from "shortid";
 
-// const token = jwt.sign({ foo: "bar" }, process.env["REMODY_SECRET"]);
-// console.log(token);
+const uploadDir = `uploads`;
 
-// const decode = jwt.decode(token, process.env["REMODY_SECRET"]);
-// console.log(decode);
+mkdirp.sync(uploadDir);
+
+const storeUpload = async ({ stream, filename }) => {
+	const id = shortid.generate();
+	const path = `${uploadDir}/${id}-${filename}`;
+
+	return new Promise((resolve, reject) =>
+		stream
+			.pipe(createWriteStream(path))
+			.on("finish", () => resolve({ id, path }))
+			.on("error", reject)
+	);
+};
+
+const processUpload = async upload => {
+	const { stream, filename, mimetype, encoding } = await upload;
+	console.log(stream);
+	const { id, path } = await storeUpload({ stream, filename });
+	return { id, filename, mimetype, encoding, path };
+};
+
 const Mutation = {
 	async createUser(parent, args, { prisma }, info) {
 		const emailTaken = await prisma.exists.User({ email: args.data.email });
@@ -92,6 +113,15 @@ const Mutation = {
 		);
 
 		return updatedUser;
+	},
+	async singleUpload(parent, { file }, { prisma }, info) {
+		const infoJson = await processUpload(file);
+
+		console.log(infoJson);
+		return infoJson;
+	},
+	async multipleUpload(parent, { files }, { prisma }, info) {
+		Promise.all(files.map(processUpload));
 	}
 };
 

@@ -8,7 +8,11 @@ type Mutation {
 	login(data: LoginUserInput!): AuthPayload!
 	deleteUser(id: ID!): User!
 	updateUser(id: ID!, data: UpdateUserInput!): User!
+	singleUpload(file: Upload!): File!
+	multipleUpload(files: [Upload!]!): [File!]!
 }
+
+scalar Upload
 
 type AuthPayload {
 	token: String!
@@ -60,4 +64,12 @@ type InterpretedData {
 	url: String!
 	description: String!
 	owner: User!
+}
+
+type File {
+	id: ID!
+	path: String!
+	filename: String!
+	mimetype: String!
+	encoding: String!
 }

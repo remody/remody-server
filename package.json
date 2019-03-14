@@ -19,7 +19,9 @@
 		"graphql-cli": "^3.0.11",
 		"graphql-yoga": "^1.14.10",
 		"jsonwebtoken": "^8.5.0",
-		"prisma-binding": "2.1.1"
+		"mkdirp": "^0.5.1",
+		"prisma-binding": "2.1.1",
+		"shortid": "^2.2.14"
 	},
 	"devDependencies": {
 		"nodemon": "^1.17.5"

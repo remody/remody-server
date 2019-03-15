@@ -8,9 +8,11 @@ const uploadDir = `uploads`;
 
 mkdirp.sync(uploadDir);
 
-const storeUpload = async ({ stream, filename }) => {
+const storeUpload = async ({ stream, filename, userId }) => {
 	const id = shortid.generate();
-	const path = `${uploadDir}/${id}-${filename}`;
+	const path = `${uploadDir}/${userId}`;
+	mkdirp.sync(path);
+	const path = `${path}/${id}-${filename}`;
 
 	return new Promise((resolve, reject) =>
 		stream
@@ -20,9 +22,9 @@ const storeUpload = async ({ stream, filename }) => {
 	);
 };
 
-const processUpload = async upload => {
+const processUpload = async (upload, userId) => {
 	const { stream, filename, mimetype, encoding } = await upload;
-	const { id, path } = await storeUpload({ stream, filename });
+	const { id, path } = await storeUpload({ stream, filename, userId });
 	return { id, filename, mimetype, encoding, path };
 };
 
@@ -123,6 +125,7 @@ const Mutation = {
 		console.log(userId);
 		const infoJson = await processUpload(file, userId);
 		//prisma binding needed
+		//TODO: 유저가 어느 파일을 가지고 있는지 file이라는 스키마를 가지고 참조할 수 있게 스키마 변경
 		return infoJson;
 	},
 	async multipleUpload(parent, { files }, { prisma }, info) {

@@ -7,6 +7,14 @@ type User {
 		@relation(name: "InterpretedDataToUser", onDelete: CASCADE)
 }
 
+type File {
+	id: ID! @unique
+	filename: String!
+	mimetype: String!
+	encoding: String!
+	path: String! @unique
+}
+
 type InterpretedData {
 	id: ID! @unique
 	name: String!

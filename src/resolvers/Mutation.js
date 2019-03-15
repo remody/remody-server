@@ -8,9 +8,11 @@ const uploadDir = `uploads`;
 
 mkdirp.sync(uploadDir);
 
-const storeUpload = async ({ stream, filename }) => {
+const storeUpload = async ({ stream, filename, userId }) => {
 	const id = shortid.generate();
-	const path = `${uploadDir}/${id}-${filename}`;
+	const userPath = `${uploadDir}/${userId}`;
+	mkdirp.sync(userPath);
+	const path = `${userPath}/${id}-${filename}`;
 
 	return new Promise((resolve, reject) =>
 		stream
@@ -20,10 +22,9 @@ const storeUpload = async ({ stream, filename }) => {
 	);
 };
 
-const processUpload = async upload => {
+const processUpload = async (upload, userId) => {
 	const { stream, filename, mimetype, encoding } = await upload;
-	console.log(stream);
-	const { id, path } = await storeUpload({ stream, filename });
+	const { id, path } = await storeUpload({ stream, filename, userId });
 	return { id, filename, mimetype, encoding, path };
 };
 
@@ -114,10 +115,16 @@ const Mutation = {
 
 		return updatedUser;
 	},
-	async singleUpload(parent, { file }, { prisma }, info) {
-		const infoJson = await processUpload(file);
-
-		console.log(infoJson);
+	async singleUpload(parent, { file }, { prisma, request }, info) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const infoJson = await processUpload(file, userId);
+		//prisma binding needed
+		//TODO: 유저가 어느 파일을 가지고 있는지 file이라는 스키마를 가지고 참조할 수 있게 스키마 변경
 		return infoJson;
 	},
 	async multipleUpload(parent, { files }, { prisma }, info) {

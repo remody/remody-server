@@ -13,8 +13,11 @@ const server = new GraphQLServer({
 		Subscription,
 		User
 	},
-	context: {
-		prisma
+	context({ request }) {
+		return {
+			prisma,
+			request
+		};
 	}
 });
 

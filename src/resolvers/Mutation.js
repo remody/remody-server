@@ -10,9 +10,9 @@ mkdirp.sync(uploadDir);
 
 const storeUpload = async ({ stream, filename, userId }) => {
 	const id = shortid.generate();
-	const path = `${uploadDir}/${userId}`;
-	mkdirp.sync(path);
-	const path = `${path}/${id}-${filename}`;
+	const userPath = `${uploadDir}/${userId}`;
+	mkdirp.sync(userPath);
+	const path = `${userPath}/${id}-${filename}`;
 
 	return new Promise((resolve, reject) =>
 		stream

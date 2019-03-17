@@ -1,6 +1,7 @@
 type Query {
 	users(query: String): [User!]!
 	me(token: String!): User!
+	files(token: String!): [File!]!
 }
 
 type Mutation {
@@ -55,7 +56,8 @@ type User {
 	name: String!
 	email: String!
 	password: String!
-	InterpretedDatas: [InterpretedData!]!
+	Files: [File!]!
+	interpretedDatas: [InterpretedData!]!
 }
 
 type InterpretedData {
@@ -68,8 +70,9 @@ type InterpretedData {
 
 type File {
 	id: ID!
-	path: String!
 	filename: String!
 	mimetype: String!
 	encoding: String!
+	path: String!
+	owner: User!
 }

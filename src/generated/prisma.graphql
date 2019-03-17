@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Sun Mar 17 2019 12:56:05 GMT+0900 (GMT+09:00)
+# timestamp: Sun Mar 17 2019 17:36:48 GMT+0900 (대한민국 표준시)
 
 type AggregateFile {
   count: Int!
@@ -24,6 +24,7 @@ type File implements Node {
   mimetype: String!
   encoding: String!
   path: String!
+  owner: User!
 }
 
 """A connection to a list of items."""
@@ -37,6 +38,19 @@ type FileConnection {
 }
 
 input FileCreateInput {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+  path: String!
+  owner: UserCreateOneWithoutFilesInput!
+}
+
+input FileCreateManyWithoutOwnerInput {
+  create: [FileCreateWithoutOwnerInput!]
+  connect: [FileWhereUniqueInput!]
+}
+
+input FileCreateWithoutOwnerInput {
   filename: String!
   mimetype: String!
   encoding: String!
@@ -75,6 +89,217 @@ type FilePreviousValues {
   mimetype: String!
   encoding: String!
   path: String!
+}
+
+input FileScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FileScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FileScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FileScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  filename: String
+
+  """All values that are not equal to given value."""
+  filename_not: String
+
+  """All values that are contained in given list."""
+  filename_in: [String!]
+
+  """All values that are not contained in given list."""
+  filename_not_in: [String!]
+
+  """All values less than the given value."""
+  filename_lt: String
+
+  """All values less than or equal the given value."""
+  filename_lte: String
+
+  """All values greater than the given value."""
+  filename_gt: String
+
+  """All values greater than or equal the given value."""
+  filename_gte: String
+
+  """All values containing the given string."""
+  filename_contains: String
+
+  """All values not containing the given string."""
+  filename_not_contains: String
+
+  """All values starting with the given string."""
+  filename_starts_with: String
+
+  """All values not starting with the given string."""
+  filename_not_starts_with: String
+
+  """All values ending with the given string."""
+  filename_ends_with: String
+
+  """All values not ending with the given string."""
+  filename_not_ends_with: String
+  mimetype: String
+
+  """All values that are not equal to given value."""
+  mimetype_not: String
+
+  """All values that are contained in given list."""
+  mimetype_in: [String!]
+
+  """All values that are not contained in given list."""
+  mimetype_not_in: [String!]
+
+  """All values less than the given value."""
+  mimetype_lt: String
+
+  """All values less than or equal the given value."""
+  mimetype_lte: String
+
+  """All values greater than the given value."""
+  mimetype_gt: String
+
+  """All values greater than or equal the given value."""
+  mimetype_gte: String
+
+  """All values containing the given string."""
+  mimetype_contains: String
+
+  """All values not containing the given string."""
+  mimetype_not_contains: String
+
+  """All values starting with the given string."""
+  mimetype_starts_with: String
+
+  """All values not starting with the given string."""
+  mimetype_not_starts_with: String
+
+  """All values ending with the given string."""
+  mimetype_ends_with: String
+
+  """All values not ending with the given string."""
+  mimetype_not_ends_with: String
+  encoding: String
+
+  """All values that are not equal to given value."""
+  encoding_not: String
+
+  """All values that are contained in given list."""
+  encoding_in: [String!]
+
+  """All values that are not contained in given list."""
+  encoding_not_in: [String!]
+
+  """All values less than the given value."""
+  encoding_lt: String
+
+  """All values less than or equal the given value."""
+  encoding_lte: String
+
+  """All values greater than the given value."""
+  encoding_gt: String
+
+  """All values greater than or equal the given value."""
+  encoding_gte: String
+
+  """All values containing the given string."""
+  encoding_contains: String
+
+  """All values not containing the given string."""
+  encoding_not_contains: String
+
+  """All values starting with the given string."""
+  encoding_starts_with: String
+
+  """All values not starting with the given string."""
+  encoding_not_starts_with: String
+
+  """All values ending with the given string."""
+  encoding_ends_with: String
+
+  """All values not ending with the given string."""
+  encoding_not_ends_with: String
+  path: String
+
+  """All values that are not equal to given value."""
+  path_not: String
+
+  """All values that are contained in given list."""
+  path_in: [String!]
+
+  """All values that are not contained in given list."""
+  path_not_in: [String!]
+
+  """All values less than the given value."""
+  path_lt: String
+
+  """All values less than or equal the given value."""
+  path_lte: String
+
+  """All values greater than the given value."""
+  path_gt: String
+
+  """All values greater than or equal the given value."""
+  path_gte: String
+
+  """All values containing the given string."""
+  path_contains: String
+
+  """All values not containing the given string."""
+  path_not_contains: String
+
+  """All values starting with the given string."""
+  path_starts_with: String
+
+  """All values not starting with the given string."""
+  path_not_starts_with: String
+
+  """All values ending with the given string."""
+  path_ends_with: String
+
+  """All values not ending with the given string."""
+  path_not_ends_with: String
 }
 
 type FileSubscriptionPayload {
@@ -121,6 +346,14 @@ input FileUpdateInput {
   mimetype: String
   encoding: String
   path: String
+  owner: UserUpdateOneRequiredWithoutFilesInput
+}
+
+input FileUpdateManyDataInput {
+  filename: String
+  mimetype: String
+  encoding: String
+  path: String
 }
 
 input FileUpdateManyMutationInput {
@@ -128,6 +361,41 @@ input FileUpdateManyMutationInput {
   mimetype: String
   encoding: String
   path: String
+}
+
+input FileUpdateManyWithoutOwnerInput {
+  create: [FileCreateWithoutOwnerInput!]
+  connect: [FileWhereUniqueInput!]
+  set: [FileWhereUniqueInput!]
+  disconnect: [FileWhereUniqueInput!]
+  delete: [FileWhereUniqueInput!]
+  update: [FileUpdateWithWhereUniqueWithoutOwnerInput!]
+  updateMany: [FileUpdateManyWithWhereNestedInput!]
+  deleteMany: [FileScalarWhereInput!]
+  upsert: [FileUpsertWithWhereUniqueWithoutOwnerInput!]
+}
+
+input FileUpdateManyWithWhereNestedInput {
+  where: FileScalarWhereInput!
+  data: FileUpdateManyDataInput!
+}
+
+input FileUpdateWithoutOwnerDataInput {
+  filename: String
+  mimetype: String
+  encoding: String
+  path: String
+}
+
+input FileUpdateWithWhereUniqueWithoutOwnerInput {
+  where: FileWhereUniqueInput!
+  data: FileUpdateWithoutOwnerDataInput!
+}
+
+input FileUpsertWithWhereUniqueWithoutOwnerInput {
+  where: FileWhereUniqueInput!
+  update: FileUpdateWithoutOwnerDataInput!
+  create: FileCreateWithoutOwnerInput!
 }
 
 input FileWhereInput {
@@ -339,6 +607,7 @@ input FileWhereInput {
 
   """All values not ending with the given string."""
   path_not_ends_with: String
+  owner: UserWhereInput
 }
 
 input FileWhereUniqueInput {
@@ -935,6 +1204,7 @@ type User implements Node {
   name: String!
   email: String!
   password: String!
+  Files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File!]
   interpretedDatas(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [InterpretedData!]
 }
 
@@ -952,7 +1222,13 @@ input UserCreateInput {
   name: String!
   email: String!
   password: String!
+  Files: FileCreateManyWithoutOwnerInput
   interpretedDatas: InterpretedDataCreateManyWithoutOwnerInput
+}
+
+input UserCreateOneWithoutFilesInput {
+  create: UserCreateWithoutFilesInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutInterpretedDatasInput {
@@ -960,10 +1236,18 @@ input UserCreateOneWithoutInterpretedDatasInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateWithoutFilesInput {
+  name: String!
+  email: String!
+  password: String!
+  interpretedDatas: InterpretedDataCreateManyWithoutOwnerInput
+}
+
 input UserCreateWithoutInterpretedDatasInput {
   name: String!
   email: String!
   password: String!
+  Files: FileCreateManyWithoutOwnerInput
 }
 
 """An edge in a connection."""
@@ -1040,6 +1324,7 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+  Files: FileUpdateManyWithoutOwnerInput
   interpretedDatas: InterpretedDataUpdateManyWithoutOwnerInput
 }
 
@@ -1049,6 +1334,13 @@ input UserUpdateManyMutationInput {
   password: String
 }
 
+input UserUpdateOneRequiredWithoutFilesInput {
+  create: UserCreateWithoutFilesInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutFilesDataInput
+  upsert: UserUpsertWithoutFilesInput
+}
+
 input UserUpdateOneRequiredWithoutInterpretedDatasInput {
   create: UserCreateWithoutInterpretedDatasInput
   connect: UserWhereUniqueInput
@@ -1056,10 +1348,23 @@ input UserUpdateOneRequiredWithoutInterpretedDatasInput {
   upsert: UserUpsertWithoutInterpretedDatasInput
 }
 
+input UserUpdateWithoutFilesDataInput {
+  name: String
+  email: String
+  password: String
+  interpretedDatas: InterpretedDataUpdateManyWithoutOwnerInput
+}
+
 input UserUpdateWithoutInterpretedDatasDataInput {
   name: String
   email: String
   password: String
+  Files: FileUpdateManyWithoutOwnerInput
+}
+
+input UserUpsertWithoutFilesInput {
+  update: UserUpdateWithoutFilesDataInput!
+  create: UserCreateWithoutFilesInput!
 }
 
 input UserUpsertWithoutInterpretedDatasInput {
@@ -1236,6 +1541,9 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
+  Files_every: FileWhereInput
+  Files_some: FileWhereInput
+  Files_none: FileWhereInput
   interpretedDatas_every: InterpretedDataWhereInput
   interpretedDatas_some: InterpretedDataWhereInput
   interpretedDatas_none: InterpretedDataWhereInput

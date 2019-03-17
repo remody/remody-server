@@ -1,5 +1,9 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Fri Mar 08 2019 17:34:40 GMT+0900 (GMT+09:00)
+# timestamp: Sun Mar 17 2019 12:56:05 GMT+0900 (GMT+09:00)
+
+type AggregateFile {
+  count: Int!
+}
 
 type AggregateInterpretedData {
   count: Int!
@@ -12,6 +16,334 @@ type AggregateUser {
 type BatchPayload {
   """The number of nodes that have been affected by the Batch operation."""
   count: Long!
+}
+
+type File implements Node {
+  id: ID!
+  filename: String!
+  mimetype: String!
+  encoding: String!
+  path: String!
+}
+
+"""A connection to a list of items."""
+type FileConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [FileEdge]!
+  aggregate: AggregateFile!
+}
+
+input FileCreateInput {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+  path: String!
+}
+
+"""An edge in a connection."""
+type FileEdge {
+  """The item at the end of the edge."""
+  node: File!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum FileOrderByInput {
+  id_ASC
+  id_DESC
+  filename_ASC
+  filename_DESC
+  mimetype_ASC
+  mimetype_DESC
+  encoding_ASC
+  encoding_DESC
+  path_ASC
+  path_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type FilePreviousValues {
+  id: ID!
+  filename: String!
+  mimetype: String!
+  encoding: String!
+  path: String!
+}
+
+type FileSubscriptionPayload {
+  mutation: MutationType!
+  node: File
+  updatedFields: [String!]
+  previousValues: FilePreviousValues
+}
+
+input FileSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FileSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FileSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FileSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: FileWhereInput
+}
+
+input FileUpdateInput {
+  filename: String
+  mimetype: String
+  encoding: String
+  path: String
+}
+
+input FileUpdateManyMutationInput {
+  filename: String
+  mimetype: String
+  encoding: String
+  path: String
+}
+
+input FileWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FileWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FileWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FileWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  filename: String
+
+  """All values that are not equal to given value."""
+  filename_not: String
+
+  """All values that are contained in given list."""
+  filename_in: [String!]
+
+  """All values that are not contained in given list."""
+  filename_not_in: [String!]
+
+  """All values less than the given value."""
+  filename_lt: String
+
+  """All values less than or equal the given value."""
+  filename_lte: String
+
+  """All values greater than the given value."""
+  filename_gt: String
+
+  """All values greater than or equal the given value."""
+  filename_gte: String
+
+  """All values containing the given string."""
+  filename_contains: String
+
+  """All values not containing the given string."""
+  filename_not_contains: String
+
+  """All values starting with the given string."""
+  filename_starts_with: String
+
+  """All values not starting with the given string."""
+  filename_not_starts_with: String
+
+  """All values ending with the given string."""
+  filename_ends_with: String
+
+  """All values not ending with the given string."""
+  filename_not_ends_with: String
+  mimetype: String
+
+  """All values that are not equal to given value."""
+  mimetype_not: String
+
+  """All values that are contained in given list."""
+  mimetype_in: [String!]
+
+  """All values that are not contained in given list."""
+  mimetype_not_in: [String!]
+
+  """All values less than the given value."""
+  mimetype_lt: String
+
+  """All values less than or equal the given value."""
+  mimetype_lte: String
+
+  """All values greater than the given value."""
+  mimetype_gt: String
+
+  """All values greater than or equal the given value."""
+  mimetype_gte: String
+
+  """All values containing the given string."""
+  mimetype_contains: String
+
+  """All values not containing the given string."""
+  mimetype_not_contains: String
+
+  """All values starting with the given string."""
+  mimetype_starts_with: String
+
+  """All values not starting with the given string."""
+  mimetype_not_starts_with: String
+
+  """All values ending with the given string."""
+  mimetype_ends_with: String
+
+  """All values not ending with the given string."""
+  mimetype_not_ends_with: String
+  encoding: String
+
+  """All values that are not equal to given value."""
+  encoding_not: String
+
+  """All values that are contained in given list."""
+  encoding_in: [String!]
+
+  """All values that are not contained in given list."""
+  encoding_not_in: [String!]
+
+  """All values less than the given value."""
+  encoding_lt: String
+
+  """All values less than or equal the given value."""
+  encoding_lte: String
+
+  """All values greater than the given value."""
+  encoding_gt: String
+
+  """All values greater than or equal the given value."""
+  encoding_gte: String
+
+  """All values containing the given string."""
+  encoding_contains: String
+
+  """All values not containing the given string."""
+  encoding_not_contains: String
+
+  """All values starting with the given string."""
+  encoding_starts_with: String
+
+  """All values not starting with the given string."""
+  encoding_not_starts_with: String
+
+  """All values ending with the given string."""
+  encoding_ends_with: String
+
+  """All values not ending with the given string."""
+  encoding_not_ends_with: String
+  path: String
+
+  """All values that are not equal to given value."""
+  path_not: String
+
+  """All values that are contained in given list."""
+  path_in: [String!]
+
+  """All values that are not contained in given list."""
+  path_not_in: [String!]
+
+  """All values less than the given value."""
+  path_lt: String
+
+  """All values less than or equal the given value."""
+  path_lte: String
+
+  """All values greater than the given value."""
+  path_gt: String
+
+  """All values greater than or equal the given value."""
+  path_gte: String
+
+  """All values containing the given string."""
+  path_contains: String
+
+  """All values not containing the given string."""
+  path_not_contains: String
+
+  """All values starting with the given string."""
+  path_starts_with: String
+
+  """All values not starting with the given string."""
+  path_not_starts_with: String
+
+  """All values ending with the given string."""
+  path_ends_with: String
+
+  """All values not ending with the given string."""
+  path_not_ends_with: String
+}
+
+input FileWhereUniqueInput {
+  id: ID
+  path: String
 }
 
 type InterpretedData implements Node {
@@ -528,16 +860,22 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createFile(data: FileCreateInput!): File!
   createInterpretedData(data: InterpretedDataCreateInput!): InterpretedData!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateInterpretedData(data: InterpretedDataUpdateInput!, where: InterpretedDataWhereUniqueInput!): InterpretedData
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteFile(where: FileWhereUniqueInput!): File
   deleteInterpretedData(where: InterpretedDataWhereUniqueInput!): InterpretedData
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertInterpretedData(where: InterpretedDataWhereUniqueInput!, create: InterpretedDataCreateInput!, update: InterpretedDataUpdateInput!): InterpretedData!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManyInterpretedDatas(data: InterpretedDataUpdateManyMutationInput!, where: InterpretedDataWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManyInterpretedDatas(where: InterpretedDataWhereInput): BatchPayload!
 }
 
@@ -570,10 +908,13 @@ type PageInfo {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
   interpretedDatas(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [InterpretedData]!
   user(where: UserWhereUniqueInput!): User
+  file(where: FileWhereUniqueInput!): File
   interpretedData(where: InterpretedDataWhereUniqueInput!): InterpretedData
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   interpretedDatasConnection(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): InterpretedDataConnection!
 
   """Fetches an object given its ID"""
@@ -585,6 +926,7 @@ type Query {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
   interpretedData(where: InterpretedDataSubscriptionWhereInput): InterpretedDataSubscriptionPayload
 }
 

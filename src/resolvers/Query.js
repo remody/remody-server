@@ -15,6 +15,20 @@ const Query = {
 	me(parent, args, { prisma }, info) {
 		const { userId } = jwt.decode(args.token, process.env["REMODY_SECRET"]);
 		return prisma.query.user({ where: { id: userId } }, info);
+	},
+	files(parent, args, { prisma }, info) {
+		const { userId } = jwt.decode(args.token, process.env["REMODY_SECRET"]);
+		console.log(userId);
+		return prisma.query.files(
+			{
+				where: {
+					owner: {
+						id: userId
+					}
+				}
+			},
+			info
+		);
 	}
 };
 

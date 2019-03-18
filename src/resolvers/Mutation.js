@@ -122,10 +122,23 @@ const Mutation = {
 			throw new Error("Authentication Needed");
 		}
 		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		const infoJson = await processUpload(file, userId);
-		//prisma binding needed
-		//TODO: 유저가 어느 파일을 가지고 있는지 file이라는 스키마를 가지고 참조할 수 있게 스키마 변경
-		return infoJson;
+		const { filename, mimetype, encoding, path } = await processUpload(
+			file,
+			userId
+		);
+		return prisma.mutation.createFile({
+			data: {
+				filename,
+				mimetype,
+				encoding,
+				path,
+				owner: {
+					connect: {
+						id: userId
+					}
+				}
+			}
+		});
 	},
 	async multipleUpload(parent, { files }, { prisma }, info) {
 		Promise.all(files.map(processUpload));

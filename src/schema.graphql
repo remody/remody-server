@@ -1,6 +1,6 @@
 type Query {
 	users(query: String): [User!]!
-	me(token: String!): User!
+	me(token: String): User!
 	files(token: String!): [File!]!
 }
 

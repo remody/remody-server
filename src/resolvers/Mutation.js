@@ -146,10 +146,8 @@ const Mutation = {
 		Promise.all(files.map(processUpload));
 	},
 	async createAuthAccessCode(parent, args, { prisma }, info) {
-		const forgotUser = await prisma.query.user({
-			where: {
-				email: args.email
-			}
+		const forgotUser = await prisma.exists.User({
+			email: args.email
 		});
 
 		if (!forgotUser) {
@@ -196,7 +194,40 @@ const Mutation = {
 		});
 
 		return true;
+	},
+	async changeUserPassword(parent, args, { prisma }, info) {
+		const AuthAccessCode = await prisma.exists.AuthAccessCode({
+			id: args.data.accessCode,
+			user: {
+				email: args.data.email
+			}
+		});
+
+		if (!AuthAccessCode) {
+			throw new Error("No Match AccessCode");
+		}
+
+		const [_, password] = await Promise.all([
+			prisma.mutation.deleteAuthAccessCode({
+				where: {
+					id: args.data.accessCode
+				}
+			}),
+			bcrypt.hash(args.data.password, 10)
+		]);
+
+		return prisma.mutation.updateUser(
+			{
+				where: {
+					email: args.data.email
+				},
+				data: {
+					password
+				}
+			},
+			info
+		);
 	}
 };
 
-export { Mutation as default };
+export default Mutation;

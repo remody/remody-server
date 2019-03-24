@@ -2,7 +2,6 @@ type Query {
 	users(query: String): [User!]!
 	me(token: String): User!
 	files(token: String!): [File!]!
-	accessCode(code: String!): User!
 }
 
 type Mutation {
@@ -13,6 +12,7 @@ type Mutation {
 	singleUpload(file: Upload!): File!
 	multipleUpload(files: [Upload!]!): [File!]!
 	createAuthAccessCode(email: String!): Boolean!
+	changeUserPassword(data: changeUserPasswordInput!): User!
 }
 
 scalar Upload
@@ -36,6 +36,12 @@ input LoginUserInput {
 input UpdateUserInput {
 	name: String
 	email: String
+}
+
+input changeUserPasswordInput {
+	accessCode: String!
+	email: String!
+	password: String!
 }
 
 enum MutationType {

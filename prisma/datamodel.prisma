@@ -24,3 +24,8 @@ type InterpretedData {
 	description: String!
 	owner: User! @relation(name: "InterpretedDataToUser", onDelete: SET_NULL)
 }
+
+type AuthAccessCode {
+	id: ID! @unique
+	User: User!
+}

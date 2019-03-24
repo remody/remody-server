@@ -2,6 +2,7 @@ type Query {
 	users(query: String): [User!]!
 	me(token: String): User!
 	files(token: String!): [File!]!
+	accessCode(code: String!): User!
 }
 
 type Mutation {
@@ -80,5 +81,5 @@ type File {
 
 type AuthAccessCode {
 	id: ID!
-	User: User!
+	user: User!
 }

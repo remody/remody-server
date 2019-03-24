@@ -142,6 +142,31 @@ const Mutation = {
 	},
 	async multipleUpload(parent, { files }, { prisma }, info) {
 		Promise.all(files.map(processUpload));
+	},
+	async createAuthAccessCode(parent, args, { prisma }, info) {
+		const forgotUser = await prisma.query.user({
+			where: {
+				email: args.email
+			}
+		});
+
+		if (!forgotUser) {
+			throw new Error("No User this email");
+		}
+
+		const data = await prisma.mutation.createAuthAccessCode(
+			{
+				data: {
+					user: {
+						connect: {
+							email: args.email
+						}
+					}
+				}
+			},
+			info
+		);
+		return data;
 	}
 };
 

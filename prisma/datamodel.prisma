@@ -27,5 +27,5 @@ type InterpretedData {
 
 type AuthAccessCode {
 	id: ID! @unique
-	User: User!
+	user: User! @relation(name: "AuthAccessCodeToUser", onDelete: SET_NULL)
 }

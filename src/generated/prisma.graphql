@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Sun Mar 24 2019 23:29:09 GMT+0900 (대한민국 표준시)
+# timestamp: Sun Mar 24 2019 23:36:16 GMT+0900 (대한민국 표준시)
 
 type AggregateAuthAccessCode {
   count: Int!
@@ -19,7 +19,7 @@ type AggregateUser {
 
 type AuthAccessCode implements Node {
   id: ID!
-  User: User!
+  user: User!
 }
 
 """A connection to a list of items."""
@@ -34,7 +34,7 @@ type AuthAccessCodeConnection {
 
 input AuthAccessCodeCreateInput {
   id: ID
-  User: UserCreateOneInput!
+  user: UserCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -99,7 +99,7 @@ input AuthAccessCodeSubscriptionWhereInput {
 }
 
 input AuthAccessCodeUpdateInput {
-  User: UserUpdateOneRequiredInput
+  user: UserUpdateOneRequiredInput
 }
 
 input AuthAccessCodeWhereInput {
@@ -151,7 +151,7 @@ input AuthAccessCodeWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  User: UserWhereInput
+  user: UserWhereInput
 }
 
 input AuthAccessCodeWhereUniqueInput {

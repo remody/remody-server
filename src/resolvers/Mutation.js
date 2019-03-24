@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { createWriteStream } from "fs";
 import mkdirp from "mkdirp";
 import shortid from "shortid";
+import nodemailer from "nodemailer";
+import smtpTransport from "nodemailer-smtp-transport";
 
 const uploadDir = `uploads`;
 
@@ -164,9 +166,36 @@ const Mutation = {
 					}
 				}
 			},
-			info
+			"{ id user { email } }"
 		);
-		return data;
+
+		const transporter = nodemailer.createTransport(
+			smtpTransport({
+				service: "gmail",
+				host: "smtp.gmail.com",
+				auth: {
+					user: process.env["REMODY_EMAIL_USER"],
+					pass: process.env["REMODY_EMAIL_PASSWORD"]
+				}
+			})
+		);
+
+		const mailOptions = {
+			from: `Remody <${process.env["REMODY_EMAIL_USER"]}>`,
+			to: data.user.email,
+			subject: "Change Your Password",
+			text: `Your code is "${data.id}"`
+		};
+
+		transporter.sendMail(mailOptions, function(error, info) {
+			if (error) {
+				throw new Error("Can't Send Email");
+			} else {
+				console.log("Email sent: " + info.response);
+			}
+		});
+
+		return true;
 	}
 };
 

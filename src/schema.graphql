@@ -12,7 +12,7 @@ type Mutation {
 	updateUser(id: ID!, data: UpdateUserInput!): User!
 	singleUpload(file: Upload!): File!
 	multipleUpload(files: [Upload!]!): [File!]!
-	createAuthAccessCode(email: String!): AuthAccessCode!
+	createAuthAccessCode(email: String!): Boolean!
 }
 
 scalar Upload

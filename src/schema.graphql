@@ -11,6 +11,7 @@ type Mutation {
 	updateUser(id: ID!, data: UpdateUserInput!): User!
 	singleUpload(file: Upload!): File!
 	multipleUpload(files: [Upload!]!): [File!]!
+	createAuthAccessCode(email: String!): AuthAccessCode!
 }
 
 scalar Upload
@@ -75,4 +76,9 @@ type File {
 	encoding: String!
 	path: String!
 	owner: User!
+}
+
+type AuthAccessCode {
+	id: ID!
+	User: User!
 }

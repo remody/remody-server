@@ -1,5 +1,9 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Sun Mar 17 2019 17:36:48 GMT+0900 (대한민국 표준시)
+# timestamp: Sun Mar 24 2019 23:36:16 GMT+0900 (대한민국 표준시)
+
+type AggregateAuthAccessCode {
+  count: Int!
+}
 
 type AggregateFile {
   count: Int!
@@ -11,6 +15,147 @@ type AggregateInterpretedData {
 
 type AggregateUser {
   count: Int!
+}
+
+type AuthAccessCode implements Node {
+  id: ID!
+  user: User!
+}
+
+"""A connection to a list of items."""
+type AuthAccessCodeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [AuthAccessCodeEdge]!
+  aggregate: AggregateAuthAccessCode!
+}
+
+input AuthAccessCodeCreateInput {
+  id: ID
+  user: UserCreateOneInput!
+}
+
+"""An edge in a connection."""
+type AuthAccessCodeEdge {
+  """The item at the end of the edge."""
+  node: AuthAccessCode!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum AuthAccessCodeOrderByInput {
+  id_ASC
+  id_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type AuthAccessCodePreviousValues {
+  id: ID!
+}
+
+type AuthAccessCodeSubscriptionPayload {
+  mutation: MutationType!
+  node: AuthAccessCode
+  updatedFields: [String!]
+  previousValues: AuthAccessCodePreviousValues
+}
+
+input AuthAccessCodeSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [AuthAccessCodeSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [AuthAccessCodeSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [AuthAccessCodeSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: AuthAccessCodeWhereInput
+}
+
+input AuthAccessCodeUpdateInput {
+  user: UserUpdateOneRequiredInput
+}
+
+input AuthAccessCodeWhereInput {
+  """Logical AND on all given filters."""
+  AND: [AuthAccessCodeWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [AuthAccessCodeWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [AuthAccessCodeWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  user: UserWhereInput
+}
+
+input AuthAccessCodeWhereUniqueInput {
+  id: ID
 }
 
 type BatchPayload {
@@ -38,6 +183,7 @@ type FileConnection {
 }
 
 input FileCreateInput {
+  id: ID
   filename: String!
   mimetype: String!
   encoding: String!
@@ -51,6 +197,7 @@ input FileCreateManyWithoutOwnerInput {
 }
 
 input FileCreateWithoutOwnerInput {
+  id: ID
   filename: String!
   mimetype: String!
   encoding: String!
@@ -634,6 +781,7 @@ type InterpretedDataConnection {
 }
 
 input InterpretedDataCreateInput {
+  id: ID
   name: String!
   url: String!
   description: String!
@@ -646,6 +794,7 @@ input InterpretedDataCreateManyWithoutOwnerInput {
 }
 
 input InterpretedDataCreateWithoutOwnerInput {
+  id: ID
   name: String!
   url: String!
   description: String!
@@ -1128,24 +1277,29 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
   createFile(data: FileCreateInput!): File!
   createInterpretedData(data: InterpretedDataCreateInput!): InterpretedData!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  createAuthAccessCode(data: AuthAccessCodeCreateInput!): AuthAccessCode!
+  createUser(data: UserCreateInput!): User!
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateInterpretedData(data: InterpretedDataUpdateInput!, where: InterpretedDataWhereUniqueInput!): InterpretedData
-  deleteUser(where: UserWhereUniqueInput!): User
+  updateAuthAccessCode(data: AuthAccessCodeUpdateInput!, where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteFile(where: FileWhereUniqueInput!): File
   deleteInterpretedData(where: InterpretedDataWhereUniqueInput!): InterpretedData
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  deleteAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
+  deleteUser(where: UserWhereUniqueInput!): User
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertInterpretedData(where: InterpretedDataWhereUniqueInput!, create: InterpretedDataCreateInput!, update: InterpretedDataUpdateInput!): InterpretedData!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  upsertAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!, create: AuthAccessCodeCreateInput!, update: AuthAccessCodeUpdateInput!): AuthAccessCode!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManyInterpretedDatas(data: InterpretedDataUpdateManyMutationInput!, where: InterpretedDataWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManyInterpretedDatas(where: InterpretedDataWhereInput): BatchPayload!
+  deleteManyAuthAccessCodes(where: AuthAccessCodeWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -1176,15 +1330,18 @@ type PageInfo {
 }
 
 type Query {
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
   interpretedDatas(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [InterpretedData]!
-  user(where: UserWhereUniqueInput!): User
+  authAccessCodes(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [AuthAccessCode]!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   file(where: FileWhereUniqueInput!): File
   interpretedData(where: InterpretedDataWhereUniqueInput!): InterpretedData
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  authAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
+  user(where: UserWhereUniqueInput!): User
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   interpretedDatasConnection(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): InterpretedDataConnection!
+  authAccessCodesConnection(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AuthAccessCodeConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -1194,9 +1351,10 @@ type Query {
 }
 
 type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
   interpretedData(where: InterpretedDataSubscriptionWhereInput): InterpretedDataSubscriptionPayload
+  authAccessCode(where: AuthAccessCodeSubscriptionWhereInput): AuthAccessCodeSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type User implements Node {
@@ -1219,11 +1377,17 @@ type UserConnection {
 }
 
 input UserCreateInput {
+  id: ID
   name: String!
   email: String!
   password: String!
   Files: FileCreateManyWithoutOwnerInput
   interpretedDatas: InterpretedDataCreateManyWithoutOwnerInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutFilesInput {
@@ -1237,6 +1401,7 @@ input UserCreateOneWithoutInterpretedDatasInput {
 }
 
 input UserCreateWithoutFilesInput {
+  id: ID
   name: String!
   email: String!
   password: String!
@@ -1244,6 +1409,7 @@ input UserCreateWithoutFilesInput {
 }
 
 input UserCreateWithoutInterpretedDatasInput {
+  id: ID
   name: String!
   email: String!
   password: String!
@@ -1320,6 +1486,14 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateDataInput {
+  name: String
+  email: String
+  password: String
+  Files: FileUpdateManyWithoutOwnerInput
+  interpretedDatas: InterpretedDataUpdateManyWithoutOwnerInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -1332,6 +1506,13 @@ input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
 }
 
 input UserUpdateOneRequiredWithoutFilesInput {
@@ -1360,6 +1541,11 @@ input UserUpdateWithoutInterpretedDatasDataInput {
   email: String
   password: String
   Files: FileUpdateManyWithoutOwnerInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutFilesInput {

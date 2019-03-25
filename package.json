@@ -20,6 +20,8 @@
 		"graphql-yoga": "^1.14.10",
 		"jsonwebtoken": "^8.5.0",
 		"mkdirp": "^0.5.1",
+		"nodemailer": "^5.1.1",
+		"nodemailer-smtp-transport": "^2.7.4",
 		"prisma-binding": "2.1.1",
 		"shortid": "^2.2.14"
 	},

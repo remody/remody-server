@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { createWriteStream } from "fs";
 import mkdirp from "mkdirp";
 import shortid from "shortid";
+import nodemailer from "nodemailer";
+import smtpTransport from "nodemailer-smtp-transport";
 
 const uploadDir = `uploads`;
 
@@ -142,7 +144,90 @@ const Mutation = {
 	},
 	async multipleUpload(parent, { files }, { prisma }, info) {
 		Promise.all(files.map(processUpload));
+	},
+	async createAuthAccessCode(parent, args, { prisma }, info) {
+		const forgotUser = await prisma.exists.User({
+			email: args.email
+		});
+
+		if (!forgotUser) {
+			throw new Error("No User this email");
+		}
+
+		const data = await prisma.mutation.createAuthAccessCode(
+			{
+				data: {
+					user: {
+						connect: {
+							email: args.email
+						}
+					}
+				}
+			},
+			"{ id user { email } }"
+		);
+
+		const transporter = nodemailer.createTransport(
+			smtpTransport({
+				service: "gmail",
+				host: "smtp.gmail.com",
+				auth: {
+					user: process.env["REMODY_EMAIL_USER"],
+					pass: process.env["REMODY_EMAIL_PASSWORD"]
+				}
+			})
+		);
+
+		const mailOptions = {
+			from: `Remody <${process.env["REMODY_EMAIL_USER"]}>`,
+			to: data.user.email,
+			subject: "Change Your Password",
+			text: `Your code is "${data.id}"`
+		};
+
+		transporter.sendMail(mailOptions, function(error, info) {
+			if (error) {
+				throw new Error("Can't Send Email");
+			} else {
+				console.log("Email sent: " + info.response);
+			}
+		});
+
+		return true;
+	},
+	async changeUserPassword(parent, args, { prisma }, info) {
+		const AuthAccessCode = await prisma.exists.AuthAccessCode({
+			id: args.data.accessCode,
+			user: {
+				email: args.data.email
+			}
+		});
+
+		if (!AuthAccessCode) {
+			throw new Error("No Match AccessCode");
+		}
+
+		const [_, password] = await Promise.all([
+			prisma.mutation.deleteAuthAccessCode({
+				where: {
+					id: args.data.accessCode
+				}
+			}),
+			bcrypt.hash(args.data.password, 10)
+		]);
+
+		return prisma.mutation.updateUser(
+			{
+				where: {
+					email: args.data.email
+				},
+				data: {
+					password
+				}
+			},
+			info
+		);
 	}
 };
 
-export { Mutation as default };
+export default Mutation;

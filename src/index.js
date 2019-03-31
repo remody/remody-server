@@ -1,5 +1,4 @@
 import { GraphQLServer } from "graphql-yoga";
-import { PythonShell } from "python-shell";
 
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
@@ -25,22 +24,4 @@ const server = new GraphQLServer({
 
 server.start(() => {
 	console.log("The server is up!");
-});
-console.log(__dirname);
-const options = {
-	mode: "text",
-
-	pythonPath: "",
-
-	pythonOptions: ["-u"],
-
-	scriptPath: `${__dirname}/python`,
-
-	args: ["value1", "value2", "value3"]
-};
-
-PythonShell.run("example.py", options, function(err, results) {
-	if (err) throw err;
-
-	console.log("results: %j", results);
 });

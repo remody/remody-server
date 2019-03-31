@@ -2,6 +2,7 @@ type Query {
 	users(query: String): [User!]!
 	me(token: String): User!
 	files(token: String!): [File!]!
+	pythonExample: Boolean
 }
 
 type Mutation {

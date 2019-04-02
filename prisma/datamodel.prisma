@@ -4,8 +4,8 @@ type User {
 	email: String! @unique
 	password: String!
 	Files: [File!]! @relation(name: "FileToUser", onDelete: CASCADE)
-	interpretedDatas: [InterpretedData!]!
-		@relation(name: "InterpretedDataToUser", onDelete: CASCADE)
+	UserSchemas: [UserSchema!]!
+		@relation(name: "UserSchemaToUser", onDelete: CASCADE)
 }
 
 type File {
@@ -17,15 +17,14 @@ type File {
 	owner: User! @relation(name: "FileToUser", onDelete: SET_NULL)
 }
 
-type InterpretedData {
-	id: ID! @unique
-	name: String!
-	url: String!
-	description: String!
-	owner: User! @relation(name: "InterpretedDataToUser", onDelete: SET_NULL)
-}
-
 type AuthAccessCode {
 	id: ID! @unique
 	user: User! @relation(name: "AuthAccessCodeToUser", onDelete: SET_NULL)
+}
+
+type UserSchema {
+	id: ID! @unique
+	user: User! @relation(name: "UserSchemaToUser", onDelete: SET_NULL)
+	name: String!
+	rowCount: Int @default(value: "1")
 }

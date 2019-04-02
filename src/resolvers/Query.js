@@ -37,17 +37,24 @@ const Query = {
 			info
 		);
 	},
-	userSchemas(parent, args, { prisma }, info) {
-		return [
+	userSchemas(parent, args, { prisma, request }, info) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!token) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+
+		return prisma.query.userSchemas(
 			{
-				id: "1",
-				user: {
-					name: "Junghun"
-				},
-				name: "Default",
-				rowCount: 1
-			}
-		];
+				where: {
+					user: {
+						id: userId
+					}
+				}
+			},
+			info
+		);
 	},
 	pythonExample(parent, args, { prisma }, info) {
 		const options = {

@@ -2,6 +2,7 @@ type Query {
 	users(query: String): [User!]!
 	me(token: String): User!
 	files(token: String!): [File!]!
+	userSchemas: [UserSchema!]!
 	pythonExample: Boolean
 }
 
@@ -45,36 +46,13 @@ input changeUserPasswordInput {
 	password: String!
 }
 
-enum MutationType {
-	CREATED
-	UPDATED
-	DELETED
-}
-
-type Subscription {
-	InterpretedData: InterpretedDataSubscriptionPayload!
-}
-
-type InterpretedDataSubscriptionPayload {
-	mutation: MutationType!
-	node: InterpretedData
-}
-
 type User {
 	id: ID!
 	name: String!
 	email: String!
 	password: String!
 	Files: [File!]!
-	interpretedDatas: [InterpretedData!]!
-}
-
-type InterpretedData {
-	id: ID!
-	name: String!
-	url: String!
-	description: String!
-	owner: User!
+	UserSchemas: [UserSchema!]!
 }
 
 type File {
@@ -89,4 +67,26 @@ type File {
 type AuthAccessCode {
 	id: ID!
 	user: User!
+}
+
+type UserSchema {
+	id: ID!
+	user: User!
+	name: String!
+	rowCount: Int!
+}
+
+enum MutationType {
+	CREATED
+	UPDATED
+	DELETED
+}
+
+type Subscription {
+	UserSchema: UserSchemaSubscriptionPayload!
+}
+
+type UserSchemaSubscriptionPayload {
+	mutation: MutationType!
+	node: UserSchema
 }

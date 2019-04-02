@@ -37,6 +37,18 @@ const Query = {
 			info
 		);
 	},
+	userSchemas(parent, args, { prisma }, info) {
+		return [
+			{
+				id: "1",
+				user: {
+					name: "Junghun"
+				},
+				name: "Default",
+				rowCount: 1
+			}
+		];
+	},
 	pythonExample(parent, args, { prisma }, info) {
 		const options = {
 			mode: "text",

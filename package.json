@@ -23,6 +23,7 @@
 		"nodemailer": "^5.1.1",
 		"nodemailer-smtp-transport": "^2.7.4",
 		"prisma-binding": "2.1.1",
+		"python-shell": "^1.0.7",
 		"shortid": "^2.2.14"
 	},
 	"devDependencies": {

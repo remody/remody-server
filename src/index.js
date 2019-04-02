@@ -1,4 +1,5 @@
 import { GraphQLServer } from "graphql-yoga";
+
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
 import Subscription from "./resolvers/Subscription";

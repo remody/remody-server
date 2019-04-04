@@ -4,6 +4,7 @@ type Query {
 	files(token: String!): [File!]!
 	userSchemas: [UserSchema!]!
 	pythonExample: Boolean
+	mysqlConnection: Boolean
 }
 
 type Mutation {

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { PythonShell } from "python-shell";
-
+import { query } from "../utils/mysql";
 const Query = {
 	users(parent, args, { prisma }, info) {
 		const onArgs = {};
@@ -55,6 +55,15 @@ const Query = {
 			},
 			info
 		);
+	},
+	async mysqlConnection(parent, args, { mysql }, info) {
+		try {
+			const result = await query(mysql, `SELECT * FROM professor`);
+			console.table(result);
+		} catch (err) {
+			throw new Error(err);
+		}
+		return true;
 	},
 	pythonExample(parent, args, { prisma }, info) {
 		const options = {

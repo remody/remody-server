@@ -56,6 +56,17 @@ const Query = {
 			info
 		);
 	},
+	mysqlConnection(parent, args, { mysql }, info) {
+		mysql.query(`SELECT * FROM remody.professor`, function(
+			error,
+			results,
+			fields
+		) {
+			if (error) throw error;
+			console.table(results);
+			return true;
+		});
+	},
 	pythonExample(parent, args, { prisma }, info) {
 		const options = {
 			mode: "text",

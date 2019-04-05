@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Sun Mar 24 2019 23:36:16 GMT+0900 (대한민국 표준시)
+# timestamp: Tue Apr 02 2019 21:07:37 GMT+0900 (대한민국 표준시)
 
 type AggregateAuthAccessCode {
   count: Int!
@@ -9,11 +9,11 @@ type AggregateFile {
   count: Int!
 }
 
-type AggregateInterpretedData {
+type AggregateUser {
   count: Int!
 }
 
-type AggregateUser {
+type AggregateUserSchema {
   count: Int!
 }
 
@@ -762,514 +762,6 @@ input FileWhereUniqueInput {
   path: String
 }
 
-type InterpretedData implements Node {
-  id: ID!
-  name: String!
-  url: String!
-  description: String!
-  owner: User!
-}
-
-"""A connection to a list of items."""
-type InterpretedDataConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [InterpretedDataEdge]!
-  aggregate: AggregateInterpretedData!
-}
-
-input InterpretedDataCreateInput {
-  id: ID
-  name: String!
-  url: String!
-  description: String!
-  owner: UserCreateOneWithoutInterpretedDatasInput!
-}
-
-input InterpretedDataCreateManyWithoutOwnerInput {
-  create: [InterpretedDataCreateWithoutOwnerInput!]
-  connect: [InterpretedDataWhereUniqueInput!]
-}
-
-input InterpretedDataCreateWithoutOwnerInput {
-  id: ID
-  name: String!
-  url: String!
-  description: String!
-}
-
-"""An edge in a connection."""
-type InterpretedDataEdge {
-  """The item at the end of the edge."""
-  node: InterpretedData!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum InterpretedDataOrderByInput {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  url_ASC
-  url_DESC
-  description_ASC
-  description_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type InterpretedDataPreviousValues {
-  id: ID!
-  name: String!
-  url: String!
-  description: String!
-}
-
-input InterpretedDataScalarWhereInput {
-  """Logical AND on all given filters."""
-  AND: [InterpretedDataScalarWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [InterpretedDataScalarWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [InterpretedDataScalarWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  url: String
-
-  """All values that are not equal to given value."""
-  url_not: String
-
-  """All values that are contained in given list."""
-  url_in: [String!]
-
-  """All values that are not contained in given list."""
-  url_not_in: [String!]
-
-  """All values less than the given value."""
-  url_lt: String
-
-  """All values less than or equal the given value."""
-  url_lte: String
-
-  """All values greater than the given value."""
-  url_gt: String
-
-  """All values greater than or equal the given value."""
-  url_gte: String
-
-  """All values containing the given string."""
-  url_contains: String
-
-  """All values not containing the given string."""
-  url_not_contains: String
-
-  """All values starting with the given string."""
-  url_starts_with: String
-
-  """All values not starting with the given string."""
-  url_not_starts_with: String
-
-  """All values ending with the given string."""
-  url_ends_with: String
-
-  """All values not ending with the given string."""
-  url_not_ends_with: String
-  description: String
-
-  """All values that are not equal to given value."""
-  description_not: String
-
-  """All values that are contained in given list."""
-  description_in: [String!]
-
-  """All values that are not contained in given list."""
-  description_not_in: [String!]
-
-  """All values less than the given value."""
-  description_lt: String
-
-  """All values less than or equal the given value."""
-  description_lte: String
-
-  """All values greater than the given value."""
-  description_gt: String
-
-  """All values greater than or equal the given value."""
-  description_gte: String
-
-  """All values containing the given string."""
-  description_contains: String
-
-  """All values not containing the given string."""
-  description_not_contains: String
-
-  """All values starting with the given string."""
-  description_starts_with: String
-
-  """All values not starting with the given string."""
-  description_not_starts_with: String
-
-  """All values ending with the given string."""
-  description_ends_with: String
-
-  """All values not ending with the given string."""
-  description_not_ends_with: String
-}
-
-type InterpretedDataSubscriptionPayload {
-  mutation: MutationType!
-  node: InterpretedData
-  updatedFields: [String!]
-  previousValues: InterpretedDataPreviousValues
-}
-
-input InterpretedDataSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [InterpretedDataSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [InterpretedDataSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [InterpretedDataSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: InterpretedDataWhereInput
-}
-
-input InterpretedDataUpdateInput {
-  name: String
-  url: String
-  description: String
-  owner: UserUpdateOneRequiredWithoutInterpretedDatasInput
-}
-
-input InterpretedDataUpdateManyDataInput {
-  name: String
-  url: String
-  description: String
-}
-
-input InterpretedDataUpdateManyMutationInput {
-  name: String
-  url: String
-  description: String
-}
-
-input InterpretedDataUpdateManyWithoutOwnerInput {
-  create: [InterpretedDataCreateWithoutOwnerInput!]
-  connect: [InterpretedDataWhereUniqueInput!]
-  set: [InterpretedDataWhereUniqueInput!]
-  disconnect: [InterpretedDataWhereUniqueInput!]
-  delete: [InterpretedDataWhereUniqueInput!]
-  update: [InterpretedDataUpdateWithWhereUniqueWithoutOwnerInput!]
-  updateMany: [InterpretedDataUpdateManyWithWhereNestedInput!]
-  deleteMany: [InterpretedDataScalarWhereInput!]
-  upsert: [InterpretedDataUpsertWithWhereUniqueWithoutOwnerInput!]
-}
-
-input InterpretedDataUpdateManyWithWhereNestedInput {
-  where: InterpretedDataScalarWhereInput!
-  data: InterpretedDataUpdateManyDataInput!
-}
-
-input InterpretedDataUpdateWithoutOwnerDataInput {
-  name: String
-  url: String
-  description: String
-}
-
-input InterpretedDataUpdateWithWhereUniqueWithoutOwnerInput {
-  where: InterpretedDataWhereUniqueInput!
-  data: InterpretedDataUpdateWithoutOwnerDataInput!
-}
-
-input InterpretedDataUpsertWithWhereUniqueWithoutOwnerInput {
-  where: InterpretedDataWhereUniqueInput!
-  update: InterpretedDataUpdateWithoutOwnerDataInput!
-  create: InterpretedDataCreateWithoutOwnerInput!
-}
-
-input InterpretedDataWhereInput {
-  """Logical AND on all given filters."""
-  AND: [InterpretedDataWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [InterpretedDataWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [InterpretedDataWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  url: String
-
-  """All values that are not equal to given value."""
-  url_not: String
-
-  """All values that are contained in given list."""
-  url_in: [String!]
-
-  """All values that are not contained in given list."""
-  url_not_in: [String!]
-
-  """All values less than the given value."""
-  url_lt: String
-
-  """All values less than or equal the given value."""
-  url_lte: String
-
-  """All values greater than the given value."""
-  url_gt: String
-
-  """All values greater than or equal the given value."""
-  url_gte: String
-
-  """All values containing the given string."""
-  url_contains: String
-
-  """All values not containing the given string."""
-  url_not_contains: String
-
-  """All values starting with the given string."""
-  url_starts_with: String
-
-  """All values not starting with the given string."""
-  url_not_starts_with: String
-
-  """All values ending with the given string."""
-  url_ends_with: String
-
-  """All values not ending with the given string."""
-  url_not_ends_with: String
-  description: String
-
-  """All values that are not equal to given value."""
-  description_not: String
-
-  """All values that are contained in given list."""
-  description_in: [String!]
-
-  """All values that are not contained in given list."""
-  description_not_in: [String!]
-
-  """All values less than the given value."""
-  description_lt: String
-
-  """All values less than or equal the given value."""
-  description_lte: String
-
-  """All values greater than the given value."""
-  description_gt: String
-
-  """All values greater than or equal the given value."""
-  description_gte: String
-
-  """All values containing the given string."""
-  description_contains: String
-
-  """All values not containing the given string."""
-  description_not_contains: String
-
-  """All values starting with the given string."""
-  description_starts_with: String
-
-  """All values not starting with the given string."""
-  description_not_starts_with: String
-
-  """All values ending with the given string."""
-  description_ends_with: String
-
-  """All values not ending with the given string."""
-  description_not_ends_with: String
-  owner: UserWhereInput
-}
-
-input InterpretedDataWhereUniqueInput {
-  id: ID
-}
-
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
 Long can represent values between -(2^63) and 2^63 - 1.
@@ -1278,27 +770,27 @@ scalar Long
 
 type Mutation {
   createFile(data: FileCreateInput!): File!
-  createInterpretedData(data: InterpretedDataCreateInput!): InterpretedData!
   createAuthAccessCode(data: AuthAccessCodeCreateInput!): AuthAccessCode!
+  createUserSchema(data: UserSchemaCreateInput!): UserSchema!
   createUser(data: UserCreateInput!): User!
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
-  updateInterpretedData(data: InterpretedDataUpdateInput!, where: InterpretedDataWhereUniqueInput!): InterpretedData
   updateAuthAccessCode(data: AuthAccessCodeUpdateInput!, where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
+  updateUserSchema(data: UserSchemaUpdateInput!, where: UserSchemaWhereUniqueInput!): UserSchema
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteFile(where: FileWhereUniqueInput!): File
-  deleteInterpretedData(where: InterpretedDataWhereUniqueInput!): InterpretedData
   deleteAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
+  deleteUserSchema(where: UserSchemaWhereUniqueInput!): UserSchema
   deleteUser(where: UserWhereUniqueInput!): User
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
-  upsertInterpretedData(where: InterpretedDataWhereUniqueInput!, create: InterpretedDataCreateInput!, update: InterpretedDataUpdateInput!): InterpretedData!
   upsertAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!, create: AuthAccessCodeCreateInput!, update: AuthAccessCodeUpdateInput!): AuthAccessCode!
+  upsertUserSchema(where: UserSchemaWhereUniqueInput!, create: UserSchemaCreateInput!, update: UserSchemaUpdateInput!): UserSchema!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
-  updateManyInterpretedDatas(data: InterpretedDataUpdateManyMutationInput!, where: InterpretedDataWhereInput): BatchPayload!
+  updateManyUserSchemas(data: UserSchemaUpdateManyMutationInput!, where: UserSchemaWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
-  deleteManyInterpretedDatas(where: InterpretedDataWhereInput): BatchPayload!
   deleteManyAuthAccessCodes(where: AuthAccessCodeWhereInput): BatchPayload!
+  deleteManyUserSchemas(where: UserSchemaWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
@@ -1331,16 +823,16 @@ type PageInfo {
 
 type Query {
   files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
-  interpretedDatas(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [InterpretedData]!
   authAccessCodes(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [AuthAccessCode]!
+  userSchemas(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserSchema]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   file(where: FileWhereUniqueInput!): File
-  interpretedData(where: InterpretedDataWhereUniqueInput!): InterpretedData
   authAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
+  userSchema(where: UserSchemaWhereUniqueInput!): UserSchema
   user(where: UserWhereUniqueInput!): User
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
-  interpretedDatasConnection(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): InterpretedDataConnection!
   authAccessCodesConnection(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AuthAccessCodeConnection!
+  userSchemasConnection(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserSchemaConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
@@ -1352,8 +844,8 @@ type Query {
 
 type Subscription {
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
-  interpretedData(where: InterpretedDataSubscriptionWhereInput): InterpretedDataSubscriptionPayload
   authAccessCode(where: AuthAccessCodeSubscriptionWhereInput): AuthAccessCodeSubscriptionPayload
+  userSchema(where: UserSchemaSubscriptionWhereInput): UserSchemaSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -1363,7 +855,7 @@ type User implements Node {
   email: String!
   password: String!
   Files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File!]
-  interpretedDatas(where: InterpretedDataWhereInput, orderBy: InterpretedDataOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [InterpretedData!]
+  UserSchemas(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserSchema!]
 }
 
 """A connection to a list of items."""
@@ -1382,7 +874,7 @@ input UserCreateInput {
   email: String!
   password: String!
   Files: FileCreateManyWithoutOwnerInput
-  interpretedDatas: InterpretedDataCreateManyWithoutOwnerInput
+  UserSchemas: UserSchemaCreateManyWithoutUserInput
 }
 
 input UserCreateOneInput {
@@ -1395,8 +887,8 @@ input UserCreateOneWithoutFilesInput {
   connect: UserWhereUniqueInput
 }
 
-input UserCreateOneWithoutInterpretedDatasInput {
-  create: UserCreateWithoutInterpretedDatasInput
+input UserCreateOneWithoutUserSchemasInput {
+  create: UserCreateWithoutUserSchemasInput
   connect: UserWhereUniqueInput
 }
 
@@ -1405,10 +897,10 @@ input UserCreateWithoutFilesInput {
   name: String!
   email: String!
   password: String!
-  interpretedDatas: InterpretedDataCreateManyWithoutOwnerInput
+  UserSchemas: UserSchemaCreateManyWithoutUserInput
 }
 
-input UserCreateWithoutInterpretedDatasInput {
+input UserCreateWithoutUserSchemasInput {
   id: ID
   name: String!
   email: String!
@@ -1445,6 +937,388 @@ type UserPreviousValues {
   name: String!
   email: String!
   password: String!
+}
+
+type UserSchema implements Node {
+  id: ID!
+  user: User!
+  name: String!
+  rowCount: Int
+}
+
+"""A connection to a list of items."""
+type UserSchemaConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserSchemaEdge]!
+  aggregate: AggregateUserSchema!
+}
+
+input UserSchemaCreateInput {
+  id: ID
+  name: String!
+  rowCount: Int
+  user: UserCreateOneWithoutUserSchemasInput!
+}
+
+input UserSchemaCreateManyWithoutUserInput {
+  create: [UserSchemaCreateWithoutUserInput!]
+  connect: [UserSchemaWhereUniqueInput!]
+}
+
+input UserSchemaCreateWithoutUserInput {
+  id: ID
+  name: String!
+  rowCount: Int
+}
+
+"""An edge in a connection."""
+type UserSchemaEdge {
+  """The item at the end of the edge."""
+  node: UserSchema!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserSchemaOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  rowCount_ASC
+  rowCount_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type UserSchemaPreviousValues {
+  id: ID!
+  name: String!
+  rowCount: Int
+}
+
+input UserSchemaScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSchemaScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSchemaScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSchemaScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  rowCount: Int
+
+  """All values that are not equal to given value."""
+  rowCount_not: Int
+
+  """All values that are contained in given list."""
+  rowCount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  rowCount_not_in: [Int!]
+
+  """All values less than the given value."""
+  rowCount_lt: Int
+
+  """All values less than or equal the given value."""
+  rowCount_lte: Int
+
+  """All values greater than the given value."""
+  rowCount_gt: Int
+
+  """All values greater than or equal the given value."""
+  rowCount_gte: Int
+}
+
+type UserSchemaSubscriptionPayload {
+  mutation: MutationType!
+  node: UserSchema
+  updatedFields: [String!]
+  previousValues: UserSchemaPreviousValues
+}
+
+input UserSchemaSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSchemaSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSchemaSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSchemaSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserSchemaWhereInput
+}
+
+input UserSchemaUpdateInput {
+  name: String
+  rowCount: Int
+  user: UserUpdateOneRequiredWithoutUserSchemasInput
+}
+
+input UserSchemaUpdateManyDataInput {
+  name: String
+  rowCount: Int
+}
+
+input UserSchemaUpdateManyMutationInput {
+  name: String
+  rowCount: Int
+}
+
+input UserSchemaUpdateManyWithoutUserInput {
+  create: [UserSchemaCreateWithoutUserInput!]
+  connect: [UserSchemaWhereUniqueInput!]
+  set: [UserSchemaWhereUniqueInput!]
+  disconnect: [UserSchemaWhereUniqueInput!]
+  delete: [UserSchemaWhereUniqueInput!]
+  update: [UserSchemaUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [UserSchemaUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserSchemaScalarWhereInput!]
+  upsert: [UserSchemaUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input UserSchemaUpdateManyWithWhereNestedInput {
+  where: UserSchemaScalarWhereInput!
+  data: UserSchemaUpdateManyDataInput!
+}
+
+input UserSchemaUpdateWithoutUserDataInput {
+  name: String
+  rowCount: Int
+}
+
+input UserSchemaUpdateWithWhereUniqueWithoutUserInput {
+  where: UserSchemaWhereUniqueInput!
+  data: UserSchemaUpdateWithoutUserDataInput!
+}
+
+input UserSchemaUpsertWithWhereUniqueWithoutUserInput {
+  where: UserSchemaWhereUniqueInput!
+  update: UserSchemaUpdateWithoutUserDataInput!
+  create: UserSchemaCreateWithoutUserInput!
+}
+
+input UserSchemaWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSchemaWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSchemaWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSchemaWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  rowCount: Int
+
+  """All values that are not equal to given value."""
+  rowCount_not: Int
+
+  """All values that are contained in given list."""
+  rowCount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  rowCount_not_in: [Int!]
+
+  """All values less than the given value."""
+  rowCount_lt: Int
+
+  """All values less than or equal the given value."""
+  rowCount_lte: Int
+
+  """All values greater than the given value."""
+  rowCount_gt: Int
+
+  """All values greater than or equal the given value."""
+  rowCount_gte: Int
+  user: UserWhereInput
+}
+
+input UserSchemaWhereUniqueInput {
+  id: ID
 }
 
 type UserSubscriptionPayload {
@@ -1491,7 +1365,7 @@ input UserUpdateDataInput {
   email: String
   password: String
   Files: FileUpdateManyWithoutOwnerInput
-  interpretedDatas: InterpretedDataUpdateManyWithoutOwnerInput
+  UserSchemas: UserSchemaUpdateManyWithoutUserInput
 }
 
 input UserUpdateInput {
@@ -1499,7 +1373,7 @@ input UserUpdateInput {
   email: String
   password: String
   Files: FileUpdateManyWithoutOwnerInput
-  interpretedDatas: InterpretedDataUpdateManyWithoutOwnerInput
+  UserSchemas: UserSchemaUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
@@ -1522,21 +1396,21 @@ input UserUpdateOneRequiredWithoutFilesInput {
   upsert: UserUpsertWithoutFilesInput
 }
 
-input UserUpdateOneRequiredWithoutInterpretedDatasInput {
-  create: UserCreateWithoutInterpretedDatasInput
+input UserUpdateOneRequiredWithoutUserSchemasInput {
+  create: UserCreateWithoutUserSchemasInput
   connect: UserWhereUniqueInput
-  update: UserUpdateWithoutInterpretedDatasDataInput
-  upsert: UserUpsertWithoutInterpretedDatasInput
+  update: UserUpdateWithoutUserSchemasDataInput
+  upsert: UserUpsertWithoutUserSchemasInput
 }
 
 input UserUpdateWithoutFilesDataInput {
   name: String
   email: String
   password: String
-  interpretedDatas: InterpretedDataUpdateManyWithoutOwnerInput
+  UserSchemas: UserSchemaUpdateManyWithoutUserInput
 }
 
-input UserUpdateWithoutInterpretedDatasDataInput {
+input UserUpdateWithoutUserSchemasDataInput {
   name: String
   email: String
   password: String
@@ -1553,9 +1427,9 @@ input UserUpsertWithoutFilesInput {
   create: UserCreateWithoutFilesInput!
 }
 
-input UserUpsertWithoutInterpretedDatasInput {
-  update: UserUpdateWithoutInterpretedDatasDataInput!
-  create: UserCreateWithoutInterpretedDatasInput!
+input UserUpsertWithoutUserSchemasInput {
+  update: UserUpdateWithoutUserSchemasDataInput!
+  create: UserCreateWithoutUserSchemasInput!
 }
 
 input UserWhereInput {
@@ -1730,9 +1604,9 @@ input UserWhereInput {
   Files_every: FileWhereInput
   Files_some: FileWhereInput
   Files_none: FileWhereInput
-  interpretedDatas_every: InterpretedDataWhereInput
-  interpretedDatas_some: InterpretedDataWhereInput
-  interpretedDatas_none: InterpretedDataWhereInput
+  UserSchemas_every: UserSchemaWhereInput
+  UserSchemas_some: UserSchemaWhereInput
+  UserSchemas_none: UserSchemaWhereInput
 }
 
 input UserWhereUniqueInput {

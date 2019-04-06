@@ -4,7 +4,7 @@
 	"description": "this is remody server",
 	"main": "index.js",
 	"scripts": {
-		"start": "babel-node src/index.js",
+		"start": "pm2 start dist/index.js --name remody-server",
 		"develop": "nodemon src/index.js --ext js,graphql --exec babel-node",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"get-schema": "graphql get-schema -p prisma"
@@ -14,6 +14,7 @@
 	"dependencies": {
 		"babel-cli": "^6.26.0",
 		"babel-plugin-transform-object-rest-spread": "^6.26.0",
+		"babel-plugin-transform-runtime": "^6.23.0",
 		"babel-preset-env": "^1.7.0",
 		"bcryptjs": "^2.4.3",
 		"graphql-cli": "^3.0.11",
@@ -28,6 +29,7 @@
 		"shortid": "^2.2.14"
 	},
 	"devDependencies": {
-		"nodemon": "^1.17.5"
+		"nodemon": "^1.17.5",
+		"pm2": "^3.4.1"
 	}
 }

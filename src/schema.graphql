@@ -16,6 +16,7 @@ type Mutation {
 	multipleUpload(files: [Upload!]!): [File!]!
 	createAuthAccessCode(email: String!): Boolean!
 	changeUserPassword(data: changeUserPasswordInput!): User!
+	createTable(data: CreateTableInput!): UserSchema!
 }
 
 scalar Upload

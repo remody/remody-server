@@ -48,6 +48,23 @@ input changeUserPasswordInput {
 	password: String!
 }
 
+enum RowType {
+	VARCHAR
+	DATETIME
+	Int
+}
+
+input CreateTableInput {
+	name: String!
+	rows: [Row!]!
+}
+
+input Row {
+	name: String!
+	type: RowType!
+	length: Int
+}
+
 type User {
 	id: ID!
 	name: String!

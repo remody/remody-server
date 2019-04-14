@@ -5,6 +5,7 @@ import mkdirp from "mkdirp";
 import shortid from "shortid";
 import nodemailer from "nodemailer";
 import smtpTransport from "nodemailer-smtp-transport";
+import { query } from "../utils/mysql";
 
 const uploadDir = `uploads`;
 
@@ -119,10 +120,11 @@ const Mutation = {
 	},
 	async singleUpload(parent, { file }, { prisma, request }, info) {
 		const header = request.headers.authorization;
-		const token = header.replace("Bearer ", "");
 		if (!header) {
 			throw new Error("Authentication Needed");
 		}
+		const token = header.replace("Bearer ", "");
+
 		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
 		const { filename, mimetype, encoding, path } = await processUpload(
 			file,
@@ -227,6 +229,52 @@ const Mutation = {
 			},
 			info
 		);
+	},
+	async createTable(parent, { data }, { request, prisma, mysql }, info) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		if (data.rows.length < 1) {
+			throw new Error("Rows Must be at least one");
+		}
+		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		let newSchema;
+		try {
+			newSchema = await prisma.mutation.createUserSchema(
+				{
+					data: {
+						name: data.name,
+						user: {
+							connect: {
+								id
+							}
+						}
+					}
+				},
+				info
+			);
+		} catch (err) {
+			throw new Error("Prisma Error\n" + err);
+		}
+		let queryString = "";
+		data.rows.map(({ name, type, length }) => {
+			queryString += `${name} ${type}(${length ? length : 30}),\n`;
+		});
+		try {
+			await query(
+				mysql,
+				`CREATE TABLE ${data.name} (
+					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					${queryString}PRIMARY KEY (id)
+				);`
+			);
+		} catch (error) {
+			throw new Error("MYSQL ERROR\n" + error);
+		}
+
+		return newSchema;
 	}
 };
 

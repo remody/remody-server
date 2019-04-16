@@ -16,6 +16,7 @@ type Mutation {
 	multipleUpload(files: [Upload!]!): [File!]!
 	createAuthAccessCode(email: String!): Boolean!
 	changeUserPassword(data: changeUserPasswordInput!): User!
+	createTable(data: CreateTableInput!): UserSchema!
 }
 
 scalar Upload
@@ -45,6 +46,23 @@ input changeUserPasswordInput {
 	accessCode: String!
 	email: String!
 	password: String!
+}
+
+enum RowType {
+	VARCHAR
+	DATETIME
+	Int
+}
+
+input CreateTableInput {
+	name: String!
+	rows: [Row!]!
+}
+
+input Row {
+	name: String!
+	type: RowType!
+	length: Int
 }
 
 type User {

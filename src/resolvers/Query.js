@@ -110,20 +110,20 @@ const Query = {
 		if (rightUserCheck.user.id !== id) {
 			throw new Error("You can't get Schema Info");
 		}
-		const fieldQuery = await query(
-			mysql,
-			`show full columns from ${rightUserCheck.name};`
-		);
-		const fields = fieldQuery.map(item => item.Field);
-		const rows = await query(mysql, `SELECT * FROM ${rightUserCheck.name}`);
 
-		console.log(fields);
-		console.log(rows);
-
-		return {
-			fields,
-			rows
-		};
+		try {
+			const [fieldQuery, rows] = await Promise.all([
+				query(mysql, `show full columns from ${rightUserCheck.name};`),
+				query(mysql, `SELECT * FROM ${rightUserCheck.name}`)
+			]);
+			const fields = fieldQuery.map(item => item.Field);
+			return {
+				fields,
+				rows
+			};
+		} catch (err) {
+			throw new Error("MySQL Error");
+		}
 	}
 };
 

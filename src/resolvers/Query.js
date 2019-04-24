@@ -85,6 +85,29 @@ const Query = {
 		});
 
 		return true;
+	},
+	async UserSchema(parent, args, { request, prisma, mysql }, info) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const data = "cjuh5mq5loy7p0b99j4ryhqwn";
+		const rightUserCheck = await prisma.query.userSchema(
+			{
+				where: { id: data }
+			},
+			"{ id user { id } }"
+		);
+		console.log(rightUserCheck);
+		if (!rightUserCheck) {
+			throw new Error("No UserSchema found");
+		}
+		if (rightUserCheck.user.id !== id) {
+			throw new Error("You can't get Schema Info");
+		}
+		return true;
 	}
 };
 

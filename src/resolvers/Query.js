@@ -114,7 +114,7 @@ const Query = {
 		try {
 			const [fieldQuery, rows] = await Promise.all([
 				query(mysql, `show full columns from ${rightUserCheck.name};`),
-				query(mysql, `SELECT * FROM ${rightUserCheck.name}`)
+				query(mysql, `SELECT * FROM ${rightUserCheck.name};`)
 			]);
 			const fields = fieldQuery.map(item => item.Field);
 			return {

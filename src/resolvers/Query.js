@@ -85,6 +85,45 @@ const Query = {
 		});
 
 		return true;
+	},
+	async UserSchemaInfo(
+		parent,
+		{ schemaId },
+		{ request, prisma, mysql },
+		info
+	) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const rightUserCheck = await prisma.query.userSchema(
+			{
+				where: { id: schemaId }
+			},
+			"{ id name user { id } }"
+		);
+		if (!rightUserCheck) {
+			throw new Error("No UserSchema found");
+		}
+		if (rightUserCheck.user.id !== id) {
+			throw new Error("You can't get Schema Info");
+		}
+
+		try {
+			const [fieldQuery, rows] = await Promise.all([
+				query(mysql, `show full columns from ${rightUserCheck.name};`),
+				query(mysql, `SELECT * FROM ${rightUserCheck.name};`)
+			]);
+			const fields = fieldQuery.map(item => item.Field);
+			return {
+				fields,
+				rows
+			};
+		} catch (err) {
+			throw new Error("MySQL Error");
+		}
 	}
 };
 

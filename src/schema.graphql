@@ -5,6 +5,7 @@ type Query {
 	userSchemas: [UserSchema!]!
 	pythonExample: Boolean
 	mysqlConnection: Boolean
+	UserSchemaInfo(schemaId: String!): SchemaInfo!
 }
 
 type Mutation {
@@ -20,6 +21,7 @@ type Mutation {
 }
 
 scalar Upload
+scalar Object
 
 type AuthPayload {
 	token: String!
@@ -63,6 +65,11 @@ input Row {
 	name: String!
 	type: RowType!
 	length: Int
+}
+
+type SchemaInfo {
+	fields: [String!]!
+	rows: [Object!]!
 }
 
 type User {

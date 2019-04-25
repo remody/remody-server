@@ -4,7 +4,8 @@
 	"description": "this is remody server",
 	"main": "index.js",
 	"scripts": {
-		"start": "pm2 start dist/index.js --name remody-server",
+		"start": "yarn build && pm2 start dist/index.js --name remody-server",
+		"build": "babel src -d dist",
 		"develop": "nodemon src/index.js --ext js,graphql --exec babel-node",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"get-schema": "graphql get-schema -p prisma"

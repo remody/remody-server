@@ -318,11 +318,14 @@ const Mutation = {
 						let Query = "";
 						const { id, ...queryObject } = item;
 						Object.entries(queryObject).map(([field, value]) => {
-							Query += `${field}=${value} `;
+							Query += `${field}=${value},`;
 						});
 						return `UPDATE ${
 							rightUserCheck.name
-						} SET ${Query} WHERE id=${id}; `;
+						} SET ${Query.substr(
+							0,
+							Query.length - 1
+						)} WHERE id=${id}; `;
 					})
 					.map(queryString => query(queryString))
 			);

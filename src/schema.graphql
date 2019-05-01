@@ -78,6 +78,7 @@ input Row {
 type SchemaInfo {
 	fields: [String!]!
 	rows: [Object!]!
+	nextId: Int!
 }
 
 type User {

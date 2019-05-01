@@ -107,14 +107,20 @@ const Query = {
 		}
 
 		try {
-			const [fieldQuery, rows] = await Promise.all([
+			const [fieldQuery, rows, [{ id: nextId }]] = await Promise.all([
 				query(`show full columns from ${rightUserCheck.name};`),
-				query(`SELECT * FROM ${rightUserCheck.name};`)
+				query(`SELECT * FROM ${rightUserCheck.name};`),
+				query(
+					`SELECT id FROM ${
+						rightUserCheck.name
+					} ORDER BY id DESC LIMIT 1;`
+				)
 			]);
 			const fields = fieldQuery.map(item => item.Field);
 			return {
 				fields,
-				rows
+				rows,
+				nextId
 			};
 		} catch (err) {
 			throw new Error("MySQL Error");

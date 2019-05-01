@@ -230,7 +230,7 @@ const Mutation = {
 			info
 		);
 	},
-	async createTable(parent, { data }, { request, prisma, mysql }, info) {
+	async createTable(parent, { data }, { request, prisma }, info) {
 		const header = request.headers.authorization;
 		const token = header.replace("Bearer ", "");
 		if (!header) {
@@ -264,7 +264,6 @@ const Mutation = {
 		});
 		try {
 			await query(
-				mysql,
 				`CREATE TABLE ${data.name} (
 					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					${queryString}PRIMARY KEY (id)
@@ -275,6 +274,79 @@ const Mutation = {
 		}
 
 		return newSchema;
+	},
+	async UpdateUserSchemaInfo(
+		parent,
+		{
+			data: { schemaId, updateRows, deleteRows, createRows }
+		},
+		{ request, prisma },
+		info
+	) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const rightUserCheck = await prisma.query.userSchema(
+			{
+				where: { id: schemaId }
+			},
+			"{ id name user { id } }"
+		);
+		if (!rightUserCheck) {
+			throw new Error("No UserSchema found");
+		}
+		if (rightUserCheck.user.id !== id) {
+			throw new Error("You can't get Schema Info");
+		}
+
+		try {
+			await Promise.all(
+				createRows
+					.map(id => {
+						return `INSERT INTO ${
+							rightUserCheck.name
+						} (id) VALUES (${id}); `;
+					})
+					.map(queryString => query(queryString))
+			);
+			await Promise.all(
+				updateRows
+					.map(item => {
+						let Query = "";
+						const { id, ...queryObject } = item;
+						Object.entries(queryObject).map(([field, value]) => {
+							Query += `${field}=${value} `;
+						});
+						return `UPDATE ${
+							rightUserCheck.name
+						} SET ${Query} WHERE id=${id}; `;
+					})
+					.map(queryString => query(queryString))
+			);
+			await Promise.all(
+				deleteRows
+					.map(id => {
+						return `DELETE FROM ${
+							rightUserCheck.name
+						} WHERE id=${id}; `;
+					})
+					.map(queryString => query(queryString))
+			);
+			const [fieldQuery, rows] = await Promise.all([
+				query(`show full columns from ${rightUserCheck.name};`),
+				query(`SELECT * FROM ${rightUserCheck.name};`)
+			]);
+			const fields = fieldQuery.map(item => item.Field);
+			return {
+				fields,
+				rows
+			};
+		} catch (err) {
+			throw new Error("MySQL Error");
+		}
 	}
 };
 

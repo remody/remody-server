@@ -56,9 +56,9 @@ const Query = {
 			info
 		);
 	},
-	async mysqlConnection(parent, args, { mysql }, info) {
+	async mysqlConnection(parent, args, info) {
 		try {
-			const result = await query(mysql, `SELECT * FROM professor`);
+			const result = await query(`SELECT * FROM professor`);
 			console.table(result);
 		} catch (err) {
 			throw new Error(err);
@@ -86,12 +86,7 @@ const Query = {
 
 		return true;
 	},
-	async UserSchemaInfo(
-		parent,
-		{ schemaId },
-		{ request, prisma, mysql },
-		info
-	) {
+	async UserSchemaInfo(parent, { schemaId }, { request, prisma }, info) {
 		const header = request.headers.authorization;
 		const token = header.replace("Bearer ", "");
 		if (!header) {
@@ -113,8 +108,8 @@ const Query = {
 
 		try {
 			const [fieldQuery, rows] = await Promise.all([
-				query(mysql, `show full columns from ${rightUserCheck.name};`),
-				query(mysql, `SELECT * FROM ${rightUserCheck.name};`)
+				query(`show full columns from ${rightUserCheck.name};`),
+				query(`SELECT * FROM ${rightUserCheck.name};`)
 			]);
 			const fields = fieldQuery.map(item => item.Field);
 			return {

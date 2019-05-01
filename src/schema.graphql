@@ -18,6 +18,7 @@ type Mutation {
 	createAuthAccessCode(email: String!): Boolean!
 	changeUserPassword(data: changeUserPasswordInput!): User!
 	createTable(data: CreateTableInput!): UserSchema!
+	UpdateUserSchemaInfo(data: UpdateSchemaInput!): SchemaInfo!
 }
 
 scalar Upload
@@ -48,6 +49,13 @@ input changeUserPasswordInput {
 	accessCode: String!
 	email: String!
 	password: String!
+}
+
+input UpdateSchemaInput {
+	schemaId: String!
+	updateRows: [Object!]!
+	deleteRows: [Int!]!
+	createRows: [Int!]!
 }
 
 enum RowType {

@@ -56,9 +56,9 @@ const Query = {
 			info
 		);
 	},
-	async mysqlConnection(parent, args, { mysql }, info) {
+	async mysqlConnection(parent, args, info) {
 		try {
-			const result = await query(mysql, `SELECT * FROM professor`);
+			const result = await query(`SELECT * FROM professor`);
 			console.table(result);
 		} catch (err) {
 			throw new Error(err);
@@ -85,6 +85,50 @@ const Query = {
 		});
 
 		return true;
+	},
+	async UserSchemaInfo(parent, { schemaId }, { request, prisma }, info) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const rightUserCheck = await prisma.query.userSchema(
+			{
+				where: { id: schemaId }
+			},
+			"{ id name user { id } }"
+		);
+		if (!rightUserCheck) {
+			throw new Error("No UserSchema found");
+		}
+		if (rightUserCheck.user.id !== id) {
+			throw new Error("You can't get Schema Info");
+		}
+
+		try {
+			const [fieldQuery, rows] = await Promise.all([
+				query(`show full columns from ${rightUserCheck.name};`),
+				query(`SELECT * FROM ${rightUserCheck.name};`)
+			]);
+			const fields = fieldQuery.map(item => item.Field);
+			const [{ id: nextId }] =
+				rows.length >= 1
+					? await query(
+							`SELECT id FROM ${
+								rightUserCheck.name
+							} ORDER BY id DESC LIMIT 1;`
+					  )
+					: [{ id: 0 }];
+
+			return {
+				fields,
+				rows,
+				nextId
+			};
+		} catch (err) {
+			throw new Error("MySQL Error");
+		}
 	}
 };
 

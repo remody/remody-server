@@ -2,3 +2,5 @@ docker-compose.yml
 prisma.yml
 node_modules
 uploads/*
+dist/*
+.DS_Store

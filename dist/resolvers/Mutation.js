@@ -46,6 +46,8 @@ var _nodemailerSmtpTransport = require("nodemailer-smtp-transport");
 
 var _nodemailerSmtpTransport2 = _interopRequireDefault(_nodemailerSmtpTransport);
 
+var _mysql = require("../utils/mysql");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var uploadDir = "uploads";
@@ -350,16 +352,16 @@ var Mutation = {
 					switch (_context7.prev = _context7.next) {
 						case 0:
 							header = request.headers.authorization;
-							token = header.replace("Bearer ", "");
 
 							if (header) {
-								_context7.next = 4;
+								_context7.next = 3;
 								break;
 							}
 
 							throw new Error("Authentication Needed");
 
-						case 4:
+						case 3:
+							token = header.replace("Bearer ", "");
 							_jwt$decode = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode.userId;
 							_context7.next = 7;
 							return processUpload(file, userId);
@@ -562,6 +564,103 @@ var Mutation = {
 		}
 
 		return changeUserPassword;
+	}(),
+	createTable: function () {
+		var _ref29 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee11(parent, _ref27, _ref28, info) {
+			var data = _ref27.data;
+			var request = _ref28.request,
+			    prisma = _ref28.prisma,
+			    mysql = _ref28.mysql;
+
+			var header, token, _jwt$decode2, id, newSchema, queryString;
+
+			return _regenerator2.default.wrap(function _callee11$(_context11) {
+				while (1) {
+					switch (_context11.prev = _context11.next) {
+						case 0:
+							header = request.headers.authorization;
+							token = header.replace("Bearer ", "");
+
+							if (header) {
+								_context11.next = 4;
+								break;
+							}
+
+							throw new Error("Authentication Needed");
+
+						case 4:
+							if (!(data.rows.length < 1)) {
+								_context11.next = 6;
+								break;
+							}
+
+							throw new Error("Rows Must be at least one");
+
+						case 6:
+							_jwt$decode2 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), id = _jwt$decode2.userId;
+							newSchema = void 0;
+							_context11.prev = 8;
+							_context11.next = 11;
+							return prisma.mutation.createUserSchema({
+								data: {
+									name: data.name,
+									user: {
+										connect: {
+											id: id
+										}
+									}
+								}
+							}, info);
+
+						case 11:
+							newSchema = _context11.sent;
+							_context11.next = 17;
+							break;
+
+						case 14:
+							_context11.prev = 14;
+							_context11.t0 = _context11["catch"](8);
+							throw new Error("Prisma Error\n" + _context11.t0);
+
+						case 17:
+							queryString = "";
+
+							data.rows.map(function (_ref30) {
+								var name = _ref30.name,
+								    type = _ref30.type,
+								    length = _ref30.length;
+
+								queryString += name + " " + type + "(" + (length ? length : 30) + "),\n";
+							});
+							_context11.prev = 19;
+							_context11.next = 22;
+							return (0, _mysql.query)(mysql, "CREATE TABLE " + data.name + " (\n\t\t\t\t\tid bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n\t\t\t\t\t" + queryString + "PRIMARY KEY (id)\n\t\t\t\t);");
+
+						case 22:
+							_context11.next = 27;
+							break;
+
+						case 24:
+							_context11.prev = 24;
+							_context11.t1 = _context11["catch"](19);
+							throw new Error("MYSQL ERROR\n" + _context11.t1);
+
+						case 27:
+							return _context11.abrupt("return", newSchema);
+
+						case 28:
+						case "end":
+							return _context11.stop();
+					}
+				}
+			}, _callee11, this, [[8, 14], [19, 24]]);
+		}));
+
+		function createTable(_x36, _x37, _x38, _x39) {
+			return _ref29.apply(this, arguments);
+		}
+
+		return createTable;
 	}()
 };
 

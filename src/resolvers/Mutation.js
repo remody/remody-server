@@ -241,10 +241,11 @@ const Mutation = {
 			throw new Error("Rows Must be at least one");
 		}
 
-		let queryString = "";
-		data.rows.map(({ name, type, length }) => {
-			queryString += `${name} ${type}(${length ? length : 30}),\n`;
-		});
+		const queryString = data.rows.reduce(
+			(acc, { name, type, length }) =>
+				acc + `${name} ${type}(${length ? length : 30}),\n`,
+			""
+		);
 		try {
 			await query(
 				`CREATE TABLE ${id}_${data.name} (

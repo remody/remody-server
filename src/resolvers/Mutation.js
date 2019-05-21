@@ -290,40 +290,43 @@ const Mutation = {
 		if (!header) {
 			throw new Error("Authentication Needed");
 		}
-		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		const rightUserCheck = await prisma.query.userSchema(
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const getSchema = await prisma.query.userSchema(
 			{
 				where: { id: schemaId }
 			},
 			"{ id name user { id } }"
 		);
-		if (!rightUserCheck) {
+		if (!getSchema) {
 			throw new Error("No UserSchema found");
 		}
-		if (rightUserCheck.user.id !== id) {
+		if (getSchema.user.id !== userId) {
 			throw new Error("You can't get Schema Info");
 		}
-
 		try {
 			await Promise.all(
 				createRows
 					.map(id => {
-						return `INSERT INTO ${
-							rightUserCheck.name
+						return `INSERT INTO ${userId}_${
+							getSchema.name
 						} (id) VALUES (${id}); `;
 					})
 					.map(queryString => query(queryString))
 			);
+		} catch (err) {
+			throw new Error(`MySQL error:Input error\n${err}`);
+		}
+		try {
 			await Promise.all(
 				updateRows
 					.map(item => {
 						let Query = "";
 						const { id, ...queryObject } = item;
 						Object.entries(queryObject).map(([field, value]) => {
-							Query += `${field}=${value},`;
+							Query += `${field}='${value}',`;
 						});
-						return `UPDATE ${
-							rightUserCheck.name
+						return `UPDATE ${userId}_${
+							getSchema.name
 						} SET ${Query.substr(
 							0,
 							Query.length - 1
@@ -331,32 +334,44 @@ const Mutation = {
 					})
 					.map(queryString => query(queryString))
 			);
+		} catch (err) {
+			throw new Error(`MySQL error:Update error\n${err}`);
+		}
+		try {
 			await Promise.all(
 				deleteRows
 					.map(id => {
-						return `DELETE FROM ${
-							rightUserCheck.name
+						return `DELETE FROM ${userId}_${
+							getSchema.name
 						} WHERE id=${id}; `;
 					})
 					.map(queryString => query(queryString))
 			);
-			const [fieldQuery, rows, [{ id: nextId }]] = await Promise.all([
-				query(`show full columns from ${rightUserCheck.name};`),
-				query(`SELECT * FROM ${rightUserCheck.name};`),
+		} catch (err) {
+			throw new Error(`MySQL error:Delete error\n${err}`);
+		}
+		try {
+			const [fieldQuery, rows, [firstItem]] = await Promise.all([
+				query(`show full columns from ${userId}_${getSchema.name};`),
+				query(`SELECT * FROM ${userId}_${getSchema.name};`),
 				query(
-					`SELECT id FROM ${
-						rightUserCheck.name
+					`SELECT id FROM ${userId}_${
+						getSchema.name
 					} ORDER BY id DESC LIMIT 1;`
 				)
 			]);
 			const fields = fieldQuery.map(item => item.Field);
+			let nextId = 1;
+			if (firstItem) {
+				nextId = firstItem.id;
+			}
 			return {
 				fields,
 				rows,
 				nextId
 			};
 		} catch (err) {
-			throw new Error("MySQL Error");
+			throw new Error(`MySQL error:Select error\n${err}`);
 		}
 	}
 };

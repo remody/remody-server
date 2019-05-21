@@ -365,6 +365,12 @@ const Mutation = {
 			if (firstItem) {
 				nextId = firstItem.id;
 			}
+			prisma.mutation.updateUserSchema({
+				data: {
+					rowCount: rows.length
+				},
+				where: { id: schemaId }
+			});
 			return {
 				fields,
 				rows,

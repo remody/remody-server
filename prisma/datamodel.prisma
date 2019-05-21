@@ -36,7 +36,7 @@ type UserSchema {
 	createdAt: DateTime! @createdAt
 	rowCount: Int @default(value: 1)
 	created: Boolean! @default(value: false)
-	columns: [Column!]!
+	columns: [Column!]! @relation(name: "UserSchemaToColumn", onDelete: CASCADE)
 }
 
 enum ColumnType {

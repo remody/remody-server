@@ -236,38 +236,18 @@ const Mutation = {
 		if (!header) {
 			throw new Error("Authentication Needed");
 		}
+		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
 		if (data.rows.length < 1) {
 			throw new Error("Rows Must be at least one");
 		}
-		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		let newSchema;
-		try {
-			newSchema = await prisma.mutation.createUserSchema(
-				{
-					data: {
-						name: data.name,
-						user: {
-							connect: {
-								id
-							}
-						}
-					},
-					columns: {
-						create: data.rows
-					}
-				},
-				info
-			);
-		} catch (err) {
-			throw new Error("Prisma Error\n" + err);
-		}
+
 		let queryString = "";
 		data.rows.map(({ name, type, length }) => {
 			queryString += `${name} ${type}(${length ? length : 30}),\n`;
 		});
 		try {
 			await query(
-				`CREATE TABLE ${data.name} (
+				`CREATE TABLE ${id}_${data.name} (
 					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					${queryString}PRIMARY KEY (id)
 				);`
@@ -275,8 +255,26 @@ const Mutation = {
 		} catch (error) {
 			throw new Error("MYSQL ERROR\n" + error);
 		}
-
-		return newSchema;
+		try {
+			return prisma.mutation.createUserSchema(
+				{
+					data: {
+						name: data.name,
+						user: {
+							connect: {
+								id
+							}
+						},
+						columns: {
+							create: data.rows
+						}
+					}
+				},
+				info
+			);
+		} catch (err) {
+			throw new Error("Prisma Error\n" + err);
+		}
 	},
 	async UpdateUserSchemaInfo(
 		parent,

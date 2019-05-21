@@ -251,6 +251,9 @@ const Mutation = {
 								id
 							}
 						}
+					},
+					columns: {
+						create: data.rows
 					}
 				},
 				info

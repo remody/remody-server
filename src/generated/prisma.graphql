@@ -1,7 +1,11 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Tue May 21 2019 16:34:34 GMT+0900 (대한민국 표준시)
+# timestamp: Wed May 22 2019 00:48:30 GMT+0900 (대한민국 표준시)
 
 type AggregateAuthAccessCode {
+  count: Int!
+}
+
+type AggregateColumn {
   count: Int!
 }
 
@@ -209,6 +213,409 @@ input AuthAccessCodeWhereUniqueInput {
 type BatchPayload {
   """The number of nodes that have been affected by the Batch operation."""
   count: Long!
+}
+
+type Column implements Node {
+  id: ID!
+  name: String!
+  type: ColumnType!
+  length: Int
+}
+
+"""A connection to a list of items."""
+type ColumnConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ColumnEdge]!
+  aggregate: AggregateColumn!
+}
+
+input ColumnCreateInput {
+  id: ID
+  name: String!
+  type: ColumnType!
+  length: Int
+}
+
+input ColumnCreateManyInput {
+  create: [ColumnCreateInput!]
+  connect: [ColumnWhereUniqueInput!]
+}
+
+"""An edge in a connection."""
+type ColumnEdge {
+  """The item at the end of the edge."""
+  node: Column!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ColumnOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  type_ASC
+  type_DESC
+  length_ASC
+  length_DESC
+}
+
+type ColumnPreviousValues {
+  id: ID!
+  name: String!
+  type: ColumnType!
+  length: Int
+}
+
+input ColumnScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ColumnScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ColumnScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ColumnScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  type: ColumnType
+
+  """All values that are not equal to given value."""
+  type_not: ColumnType
+
+  """All values that are contained in given list."""
+  type_in: [ColumnType!]
+
+  """All values that are not contained in given list."""
+  type_not_in: [ColumnType!]
+  length: Int
+
+  """All values that are not equal to given value."""
+  length_not: Int
+
+  """All values that are contained in given list."""
+  length_in: [Int!]
+
+  """All values that are not contained in given list."""
+  length_not_in: [Int!]
+
+  """All values less than the given value."""
+  length_lt: Int
+
+  """All values less than or equal the given value."""
+  length_lte: Int
+
+  """All values greater than the given value."""
+  length_gt: Int
+
+  """All values greater than or equal the given value."""
+  length_gte: Int
+}
+
+type ColumnSubscriptionPayload {
+  mutation: MutationType!
+  node: Column
+  updatedFields: [String!]
+  previousValues: ColumnPreviousValues
+}
+
+input ColumnSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ColumnSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ColumnSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ColumnSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ColumnWhereInput
+}
+
+enum ColumnType {
+  VARCHAR
+  DATETIME
+  Int
+}
+
+input ColumnUpdateDataInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateManyDataInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateManyInput {
+  create: [ColumnCreateInput!]
+  connect: [ColumnWhereUniqueInput!]
+  set: [ColumnWhereUniqueInput!]
+  disconnect: [ColumnWhereUniqueInput!]
+  delete: [ColumnWhereUniqueInput!]
+  update: [ColumnUpdateWithWhereUniqueNestedInput!]
+  updateMany: [ColumnUpdateManyWithWhereNestedInput!]
+  deleteMany: [ColumnScalarWhereInput!]
+  upsert: [ColumnUpsertWithWhereUniqueNestedInput!]
+}
+
+input ColumnUpdateManyMutationInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateManyWithWhereNestedInput {
+  where: ColumnScalarWhereInput!
+  data: ColumnUpdateManyDataInput!
+}
+
+input ColumnUpdateWithWhereUniqueNestedInput {
+  where: ColumnWhereUniqueInput!
+  data: ColumnUpdateDataInput!
+}
+
+input ColumnUpsertWithWhereUniqueNestedInput {
+  where: ColumnWhereUniqueInput!
+  update: ColumnUpdateDataInput!
+  create: ColumnCreateInput!
+}
+
+input ColumnWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ColumnWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ColumnWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ColumnWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  type: ColumnType
+
+  """All values that are not equal to given value."""
+  type_not: ColumnType
+
+  """All values that are contained in given list."""
+  type_in: [ColumnType!]
+
+  """All values that are not contained in given list."""
+  type_not_in: [ColumnType!]
+  length: Int
+
+  """All values that are not equal to given value."""
+  length_not: Int
+
+  """All values that are contained in given list."""
+  length_in: [Int!]
+
+  """All values that are not contained in given list."""
+  length_not_in: [Int!]
+
+  """All values less than the given value."""
+  length_lt: Int
+
+  """All values less than or equal the given value."""
+  length_lte: Int
+
+  """All values greater than the given value."""
+  length_gt: Int
+
+  """All values greater than or equal the given value."""
+  length_gte: Int
+}
+
+input ColumnWhereUniqueInput {
+  id: ID
 }
 
 scalar DateTime
@@ -914,25 +1321,31 @@ type Mutation {
   createFile(data: FileCreateInput!): File!
   createAuthAccessCode(data: AuthAccessCodeCreateInput!): AuthAccessCode!
   createUserSchema(data: UserSchemaCreateInput!): UserSchema!
+  createColumn(data: ColumnCreateInput!): Column!
   createUser(data: UserCreateInput!): User!
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateAuthAccessCode(data: AuthAccessCodeUpdateInput!, where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
   updateUserSchema(data: UserSchemaUpdateInput!, where: UserSchemaWhereUniqueInput!): UserSchema
+  updateColumn(data: ColumnUpdateInput!, where: ColumnWhereUniqueInput!): Column
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteFile(where: FileWhereUniqueInput!): File
   deleteAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
   deleteUserSchema(where: UserSchemaWhereUniqueInput!): UserSchema
+  deleteColumn(where: ColumnWhereUniqueInput!): Column
   deleteUser(where: UserWhereUniqueInput!): User
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!, create: AuthAccessCodeCreateInput!, update: AuthAccessCodeUpdateInput!): AuthAccessCode!
   upsertUserSchema(where: UserSchemaWhereUniqueInput!, create: UserSchemaCreateInput!, update: UserSchemaUpdateInput!): UserSchema!
+  upsertColumn(where: ColumnWhereUniqueInput!, create: ColumnCreateInput!, update: ColumnUpdateInput!): Column!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManyUserSchemas(data: UserSchemaUpdateManyMutationInput!, where: UserSchemaWhereInput): BatchPayload!
+  updateManyColumns(data: ColumnUpdateManyMutationInput!, where: ColumnWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManyAuthAccessCodes(where: AuthAccessCodeWhereInput): BatchPayload!
   deleteManyUserSchemas(where: UserSchemaWhereInput): BatchPayload!
+  deleteManyColumns(where: ColumnWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
@@ -967,14 +1380,17 @@ type Query {
   files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
   authAccessCodes(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [AuthAccessCode]!
   userSchemas(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserSchema]!
+  columns(where: ColumnWhereInput, orderBy: ColumnOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Column]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   file(where: FileWhereUniqueInput!): File
   authAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
   userSchema(where: UserSchemaWhereUniqueInput!): UserSchema
+  column(where: ColumnWhereUniqueInput!): Column
   user(where: UserWhereUniqueInput!): User
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   authAccessCodesConnection(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AuthAccessCodeConnection!
   userSchemasConnection(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserSchemaConnection!
+  columnsConnection(where: ColumnWhereInput, orderBy: ColumnOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ColumnConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
@@ -988,6 +1404,7 @@ type Subscription {
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
   authAccessCode(where: AuthAccessCodeSubscriptionWhereInput): AuthAccessCodeSubscriptionPayload
   userSchema(where: UserSchemaSubscriptionWhereInput): UserSchemaSubscriptionPayload
+  column(where: ColumnSubscriptionWhereInput): ColumnSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -1092,6 +1509,8 @@ type UserSchema implements Node {
   updatedAt: DateTime!
   createdAt: DateTime!
   rowCount: Int
+  created: Boolean!
+  columns(where: ColumnWhereInput, orderBy: ColumnOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Column!]
 }
 
 """A connection to a list of items."""
@@ -1108,7 +1527,9 @@ input UserSchemaCreateInput {
   id: ID
   name: String!
   rowCount: Int
+  created: Boolean
   user: UserCreateOneWithoutUserSchemasInput!
+  columns: ColumnCreateManyInput
 }
 
 input UserSchemaCreateManyWithoutUserInput {
@@ -1120,6 +1541,8 @@ input UserSchemaCreateWithoutUserInput {
   id: ID
   name: String!
   rowCount: Int
+  created: Boolean
+  columns: ColumnCreateManyInput
 }
 
 """An edge in a connection."""
@@ -1142,6 +1565,8 @@ enum UserSchemaOrderByInput {
   createdAt_DESC
   rowCount_ASC
   rowCount_DESC
+  created_ASC
+  created_DESC
 }
 
 type UserSchemaPreviousValues {
@@ -1150,6 +1575,7 @@ type UserSchemaPreviousValues {
   updatedAt: DateTime!
   createdAt: DateTime!
   rowCount: Int
+  created: Boolean!
 }
 
 input UserSchemaScalarWhereInput {
@@ -1307,6 +1733,10 @@ input UserSchemaScalarWhereInput {
 
   """All values greater than or equal the given value."""
   rowCount_gte: Int
+  created: Boolean
+
+  """All values that are not equal to given value."""
+  created_not: Boolean
 }
 
 type UserSchemaSubscriptionPayload {
@@ -1351,17 +1781,21 @@ input UserSchemaSubscriptionWhereInput {
 input UserSchemaUpdateInput {
   name: String
   rowCount: Int
+  created: Boolean
   user: UserUpdateOneRequiredWithoutUserSchemasInput
+  columns: ColumnUpdateManyInput
 }
 
 input UserSchemaUpdateManyDataInput {
   name: String
   rowCount: Int
+  created: Boolean
 }
 
 input UserSchemaUpdateManyMutationInput {
   name: String
   rowCount: Int
+  created: Boolean
 }
 
 input UserSchemaUpdateManyWithoutUserInput {
@@ -1384,6 +1818,8 @@ input UserSchemaUpdateManyWithWhereNestedInput {
 input UserSchemaUpdateWithoutUserDataInput {
   name: String
   rowCount: Int
+  created: Boolean
+  columns: ColumnUpdateManyInput
 }
 
 input UserSchemaUpdateWithWhereUniqueWithoutUserInput {
@@ -1552,7 +1988,14 @@ input UserSchemaWhereInput {
 
   """All values greater than or equal the given value."""
   rowCount_gte: Int
+  created: Boolean
+
+  """All values that are not equal to given value."""
+  created_not: Boolean
   user: UserWhereInput
+  columns_every: ColumnWhereInput
+  columns_some: ColumnWhereInput
+  columns_none: ColumnWhereInput
 }
 
 input UserSchemaWhereUniqueInput {

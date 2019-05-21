@@ -35,4 +35,19 @@ type UserSchema {
 	updatedAt: DateTime! @updatedAt
 	createdAt: DateTime! @createdAt
 	rowCount: Int @default(value: 1)
+	created: Boolean! @default(value: false)
+	columns: [Column!]!
+}
+
+enum ColumnType {
+	VARCHAR
+	DATETIME
+	Int
+}
+
+type Column {
+	id: ID! @id
+	name: String!
+	type: ColumnType!
+	length: Int
 }

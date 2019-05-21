@@ -1,30 +1,38 @@
 type User {
-	id: ID! @unique
+	id: ID! @id
 	name: String!
 	email: String! @unique
 	password: String!
+	updatedAt: DateTime! @updatedAt
+	createdAt: DateTime! @createdAt
 	Files: [File!]! @relation(name: "FileToUser", onDelete: CASCADE)
 	UserSchemas: [UserSchema!]!
 		@relation(name: "UserSchemaToUser", onDelete: CASCADE)
 }
 
 type File {
-	id: ID! @unique
+	id: ID! @id
 	filename: String!
 	mimetype: String!
 	encoding: String!
 	path: String! @unique
+	updatedAt: DateTime! @updatedAt
+	createdAt: DateTime! @createdAt
 	owner: User! @relation(name: "FileToUser", onDelete: SET_NULL)
 }
 
 type AuthAccessCode {
-	id: ID! @unique
+	id: ID! @id
+	updatedAt: DateTime! @updatedAt
+	createdAt: DateTime! @createdAt
 	user: User! @relation(name: "AuthAccessCodeToUser", onDelete: SET_NULL)
 }
 
 type UserSchema {
-	id: ID! @unique
+	id: ID! @id
 	user: User! @relation(name: "UserSchemaToUser", onDelete: SET_NULL)
 	name: String!
-	rowCount: Int @default(value: "1")
+	updatedAt: DateTime! @updatedAt
+	createdAt: DateTime! @createdAt
+	rowCount: Int @default(value: 1)
 }

@@ -108,7 +108,22 @@ type UserSchema {
 	id: ID!
 	user: User!
 	name: String!
-	rowCount: Int!
+	rowCount: Int
+	created: Boolean!
+	columns: [Column!]!
+}
+
+enum ColumnType {
+	VARCHAR
+	DATETIME
+	Int
+}
+
+type Column {
+	id: ID!
+	name: String!
+	type: ColumnType!
+	length: Int
 }
 
 enum MutationType {

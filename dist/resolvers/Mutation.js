@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _objectWithoutProperties2 = require("babel-runtime/helpers/objectWithoutProperties");
+
+var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
 var _slicedToArray2 = require("babel-runtime/helpers/slicedToArray");
 
 var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
@@ -569,10 +573,9 @@ var Mutation = {
 		var _ref29 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee11(parent, _ref27, _ref28, info) {
 			var data = _ref27.data;
 			var request = _ref28.request,
-			    prisma = _ref28.prisma,
-			    mysql = _ref28.mysql;
+			    prisma = _ref28.prisma;
 
-			var header, token, _jwt$decode2, id, newSchema, queryString;
+			var header, token, _jwt$decode2, id, queryString;
 
 			return _regenerator2.default.wrap(function _callee11$(_context11) {
 				while (1) {
@@ -589,71 +592,62 @@ var Mutation = {
 							throw new Error("Authentication Needed");
 
 						case 4:
+							_jwt$decode2 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), id = _jwt$decode2.userId;
+
 							if (!(data.rows.length < 1)) {
-								_context11.next = 6;
+								_context11.next = 7;
 								break;
 							}
 
 							throw new Error("Rows Must be at least one");
 
-						case 6:
-							_jwt$decode2 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), id = _jwt$decode2.userId;
-							newSchema = void 0;
+						case 7:
+							queryString = data.rows.reduce(function (acc, _ref30) {
+								var name = _ref30.name,
+								    type = _ref30.type,
+								    length = _ref30.length;
+								return acc + (name + " " + type + "(" + (length ? length : 30) + "),\n");
+							}, "");
 							_context11.prev = 8;
 							_context11.next = 11;
-							return prisma.mutation.createUserSchema({
+							return (0, _mysql.query)("CREATE TABLE " + id + "_" + data.name + " (\n\t\t\t\t\tid bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n\t\t\t\t\t" + queryString + "PRIMARY KEY (id)\n\t\t\t\t);");
+
+						case 11:
+							_context11.next = 16;
+							break;
+
+						case 13:
+							_context11.prev = 13;
+							_context11.t0 = _context11["catch"](8);
+							throw new Error("MYSQL ERROR\n" + _context11.t0);
+
+						case 16:
+							_context11.prev = 16;
+							return _context11.abrupt("return", prisma.mutation.createUserSchema({
 								data: {
 									name: data.name,
 									user: {
 										connect: {
 											id: id
 										}
+									},
+									columns: {
+										create: data.rows
 									}
 								}
-							}, info);
+							}, info));
 
-						case 11:
-							newSchema = _context11.sent;
-							_context11.next = 17;
-							break;
+						case 20:
+							_context11.prev = 20;
+							_context11.t1 = _context11["catch"](16);
+							throw new Error("Prisma Error\n" + _context11.t1);
 
-						case 14:
-							_context11.prev = 14;
-							_context11.t0 = _context11["catch"](8);
-							throw new Error("Prisma Error\n" + _context11.t0);
-
-						case 17:
-							queryString = "";
-
-							data.rows.map(function (_ref30) {
-								var name = _ref30.name,
-								    type = _ref30.type,
-								    length = _ref30.length;
-
-								queryString += name + " " + type + "(" + (length ? length : 30) + "),\n";
-							});
-							_context11.prev = 19;
-							_context11.next = 22;
-							return (0, _mysql.query)(mysql, "CREATE TABLE " + data.name + " (\n\t\t\t\t\tid bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n\t\t\t\t\t" + queryString + "PRIMARY KEY (id)\n\t\t\t\t);");
-
-						case 22:
-							_context11.next = 27;
-							break;
-
-						case 24:
-							_context11.prev = 24;
-							_context11.t1 = _context11["catch"](19);
-							throw new Error("MYSQL ERROR\n" + _context11.t1);
-
-						case 27:
-							return _context11.abrupt("return", newSchema);
-
-						case 28:
+						case 23:
 						case "end":
 							return _context11.stop();
 					}
 				}
-			}, _callee11, this, [[8, 14], [19, 24]]);
+			}, _callee11, this, [[8, 13], [16, 20]]);
 		}));
 
 		function createTable(_x36, _x37, _x38, _x39) {
@@ -661,6 +655,173 @@ var Mutation = {
 		}
 
 		return createTable;
+	}(),
+	UpdateUserSchemaInfo: function () {
+		var _ref33 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee12(parent, _ref31, _ref32, info) {
+			var _ref31$data = _ref31.data,
+			    schemaId = _ref31$data.schemaId,
+			    updateRows = _ref31$data.updateRows,
+			    deleteRows = _ref31$data.deleteRows,
+			    createRows = _ref31$data.createRows;
+			var request = _ref32.request,
+			    prisma = _ref32.prisma;
+
+			var header, token, _jwt$decode3, userId, getSchema, _ref36, _ref37, fieldQuery, rows, _ref37$, firstItem, fields, nextId;
+
+			return _regenerator2.default.wrap(function _callee12$(_context12) {
+				while (1) {
+					switch (_context12.prev = _context12.next) {
+						case 0:
+							header = request.headers.authorization;
+							token = header.replace("Bearer ", "");
+
+							if (header) {
+								_context12.next = 4;
+								break;
+							}
+
+							throw new Error("Authentication Needed");
+
+						case 4:
+							_jwt$decode3 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode3.userId;
+							_context12.next = 7;
+							return prisma.query.userSchema({
+								where: { id: schemaId }
+							}, "{ id name user { id } }");
+
+						case 7:
+							getSchema = _context12.sent;
+
+							if (getSchema) {
+								_context12.next = 10;
+								break;
+							}
+
+							throw new Error("No UserSchema found");
+
+						case 10:
+							if (!(getSchema.user.id !== userId)) {
+								_context12.next = 12;
+								break;
+							}
+
+							throw new Error("You can't get Schema Info");
+
+						case 12:
+							_context12.prev = 12;
+							_context12.next = 15;
+							return Promise.all(createRows.map(function (id) {
+								return "INSERT INTO " + userId + "_" + getSchema.name + " (id) VALUES (" + id + "); ";
+							}).map(function (queryString) {
+								return (0, _mysql.query)(queryString);
+							}));
+
+						case 15:
+							_context12.next = 20;
+							break;
+
+						case 17:
+							_context12.prev = 17;
+							_context12.t0 = _context12["catch"](12);
+							throw new Error("MySQL error:Input error\n" + _context12.t0);
+
+						case 20:
+							_context12.prev = 20;
+							_context12.next = 23;
+							return Promise.all(updateRows.map(function (item) {
+								var Query = "";
+								var id = item.id,
+								    queryObject = (0, _objectWithoutProperties3.default)(item, ["id"]);
+
+								Object.entries(queryObject).map(function (_ref34) {
+									var _ref35 = (0, _slicedToArray3.default)(_ref34, 2),
+									    field = _ref35[0],
+									    value = _ref35[1];
+
+									Query += field + "='" + value + "',";
+								});
+								return "UPDATE " + userId + "_" + getSchema.name + " SET " + Query.substr(0, Query.length - 1) + " WHERE id=" + id + "; ";
+							}).map(function (queryString) {
+								return (0, _mysql.query)(queryString);
+							}));
+
+						case 23:
+							_context12.next = 28;
+							break;
+
+						case 25:
+							_context12.prev = 25;
+							_context12.t1 = _context12["catch"](20);
+							throw new Error("MySQL error:Update error\n" + _context12.t1);
+
+						case 28:
+							_context12.prev = 28;
+							_context12.next = 31;
+							return Promise.all(deleteRows.map(function (id) {
+								return "DELETE FROM " + userId + "_" + getSchema.name + " WHERE id=" + id + "; ";
+							}).map(function (queryString) {
+								return (0, _mysql.query)(queryString);
+							}));
+
+						case 31:
+							_context12.next = 36;
+							break;
+
+						case 33:
+							_context12.prev = 33;
+							_context12.t2 = _context12["catch"](28);
+							throw new Error("MySQL error:Delete error\n" + _context12.t2);
+
+						case 36:
+							_context12.prev = 36;
+							_context12.next = 39;
+							return Promise.all([(0, _mysql.query)("show full columns from " + userId + "_" + getSchema.name + ";"), (0, _mysql.query)("SELECT * FROM " + userId + "_" + getSchema.name + ";"), (0, _mysql.query)("SELECT id FROM " + userId + "_" + getSchema.name + " ORDER BY id DESC LIMIT 1;")]);
+
+						case 39:
+							_ref36 = _context12.sent;
+							_ref37 = (0, _slicedToArray3.default)(_ref36, 3);
+							fieldQuery = _ref37[0];
+							rows = _ref37[1];
+							_ref37$ = (0, _slicedToArray3.default)(_ref37[2], 1);
+							firstItem = _ref37$[0];
+							fields = fieldQuery.map(function (item) {
+								return item.Field;
+							});
+							nextId = 1;
+
+							if (firstItem) {
+								nextId = firstItem.id;
+							}
+							prisma.mutation.updateUserSchema({
+								data: {
+									rowCount: rows.length
+								},
+								where: { id: schemaId }
+							});
+							return _context12.abrupt("return", {
+								fields: fields,
+								rows: rows,
+								nextId: nextId
+							});
+
+						case 52:
+							_context12.prev = 52;
+							_context12.t3 = _context12["catch"](36);
+							throw new Error("MySQL error:Select error\n" + _context12.t3);
+
+						case 55:
+						case "end":
+							return _context12.stop();
+					}
+				}
+			}, _callee12, this, [[12, 17], [20, 25], [28, 33], [36, 52]]);
+		}));
+
+		function UpdateUserSchemaInfo(_x40, _x41, _x42, _x43) {
+			return _ref33.apply(this, arguments);
+		}
+
+		return UpdateUserSchemaInfo;
 	}()
 };
 

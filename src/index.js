@@ -4,6 +4,7 @@ import Mutation from "./resolvers/Mutation";
 import Subscription from "./resolvers/Subscription";
 import User from "./resolvers/User";
 import prisma from "./prisma";
+import elastic from "./elastic";
 
 const server = new GraphQLServer({
 	typeDefs: "./src/schema.graphql",
@@ -16,6 +17,7 @@ const server = new GraphQLServer({
 	context({ request }) {
 		return {
 			prisma,
+			elastic,
 			request
 		};
 	}

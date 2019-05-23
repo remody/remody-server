@@ -65,6 +65,23 @@ const Query = {
 		}
 		return true;
 	},
+	async elasticSearchConnection(parent, args, { elastic }, info) {
+		try {
+			const result = await elastic.search({
+				index: "shopping",
+				body: {
+					query: {
+						match_all: {}
+					}
+				}
+			});
+			console.log(result);
+		} catch (err) {
+			throw new Error(err);
+		}
+
+		return true;
+	},
 	pythonExample(parent, args, { prisma }, info) {
 		const options = {
 			mode: "text",

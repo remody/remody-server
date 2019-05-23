@@ -22,6 +22,10 @@ var _prisma = require("./prisma");
 
 var _prisma2 = _interopRequireDefault(_prisma);
 
+var _elastic = require("./elastic");
+
+var _elastic2 = _interopRequireDefault(_elastic);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var server = new _graphqlYoga.GraphQLServer({
@@ -37,6 +41,7 @@ var server = new _graphqlYoga.GraphQLServer({
 
 		return {
 			prisma: _prisma2.default,
+			elastic: _elastic2.default,
 			request: request
 		};
 	}

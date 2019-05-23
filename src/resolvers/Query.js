@@ -68,7 +68,7 @@ const Query = {
 	async elasticSearchConnection(parent, args, { elastic }, info) {
 		try {
 			const result = await elastic.search({
-				index: "shopping",
+				index: "paper",
 				body: {
 					query: {
 						match_all: {}

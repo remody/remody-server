@@ -1,7 +1,7 @@
 {
 	"settings": {
-		"number_of_shards": 1,
-		"number_of_replicas": 0,
+		"number_of_shards": 5,
+		"number_of_replicas": 1,
 		"index": {
 			"analysis": {
 				"analyzer": {
@@ -32,6 +32,7 @@
 							"MM",
 							"SP",
 							"SSC",
+
 							"SSO",
 							"SC",
 							"SE",
@@ -52,6 +53,10 @@
 	"mappings": {
 		"metadata": {
 			"properties": {
+				"title": { "type": "text", "boost": 10 },
+				"author": { "type": "keyword", "boost": 10 },
+				"belong": { "type": "keyword", "boost": 5 },
+				"publishedyear": { "type": "integer" },
 				"body": {
 					"type": "text",
 					"analyzer": "korean"

@@ -8,6 +8,7 @@ type User {
 	Files: [File!]! @relation(name: "FileToUser", onDelete: CASCADE)
 	UserSchemas: [UserSchema!]!
 		@relation(name: "UserSchemaToUser", onDelete: CASCADE)
+	Papers: [Paper!]! @relation(name: "PaperToUser", onDelete: CASCADE)
 }
 
 type File {
@@ -37,6 +38,15 @@ type UserSchema {
 	rowCount: Int @default(value: 1)
 	created: Boolean! @default(value: false)
 	columns: [Column!]! @relation(name: "UserSchemaToColumn", onDelete: CASCADE)
+}
+
+type Paper {
+	id: ID! @id
+	owner: User! @relation(name: "PaperToUser", onDelete: SET_NULL)
+	title: String!
+	author: String!
+	belong: String!
+	publishedyear: Int!
 }
 
 enum ColumnType {

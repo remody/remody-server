@@ -68,11 +68,25 @@ const Query = {
 	async elasticSearchConnection(parent, args, { elastic }, info) {
 		try {
 			const result = await elastic.search({
-				index: "exam",
+				index: "paper",
 				body: {
 					query: {
-						match: { fullsearch: "" }
-					}
+						bool: {
+							must: [
+								{
+									query_string: {
+										query: "노래방"
+									}
+								}
+							],
+							must_not: [],
+							should: []
+						}
+					},
+					from: 0,
+					size: 10,
+					sort: [],
+					aggs: {}
 				}
 			});
 			console.log(result.body);

@@ -53,7 +53,7 @@
 	"mappings": {
 		"metadata": {
 			"properties": {
-				"title": { "type": "text", "boost": 10 },
+				"title": { "type": "text", "boost": 10, "analyzer": "korean" },
 				"author": { "type": "keyword", "boost": 10 },
 				"belong": { "type": "keyword", "boost": 5 },
 				"publishedyear": { "type": "integer" },

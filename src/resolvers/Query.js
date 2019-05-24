@@ -68,14 +68,15 @@ const Query = {
 	async elasticSearchConnection(parent, args, { elastic }, info) {
 		try {
 			const result = await elastic.search({
-				index: "paper",
+				index: "exam",
 				body: {
 					query: {
-						match_all: {}
+						match: { fullsearch: "" }
 					}
 				}
 			});
-			console.log(result);
+			console.log(result.body);
+			console.log(result.body.hits.hits.map(item => item._source));
 		} catch (err) {
 			throw new Error(err);
 		}

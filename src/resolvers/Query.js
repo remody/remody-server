@@ -129,6 +129,23 @@ const Query = {
 		} catch (err) {
 			throw new Error("MySQL Error");
 		}
+	},
+	papers(parent, { first = 6, after }, { prisma }, info) {
+		if (after) {
+			return prisma.query.papers(
+				{
+					first,
+					after
+				},
+				info
+			);
+		}
+		return prisma.query.papers(
+			{
+				first
+			},
+			info
+		);
 	}
 };
 

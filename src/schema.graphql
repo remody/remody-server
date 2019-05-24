@@ -6,6 +6,7 @@ type Query {
 	pythonExample: Boolean
 	mysqlConnection: Boolean
 	UserSchemaInfo(schemaId: String!): SchemaInfo!
+	papers(first: Int, after: ID): [Paper!]!
 }
 
 type Mutation {
@@ -124,6 +125,15 @@ type Column {
 	name: String!
 	type: ColumnType!
 	length: Int
+}
+
+type Paper {
+	id: ID!
+	owner: User!
+	title: String!
+	author: String!
+	belong: String!
+	publishedyear: Int!
 }
 
 enum MutationType {

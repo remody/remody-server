@@ -1,0 +1,67 @@
+{
+	"settings": {
+		"number_of_shards": 5,
+		"number_of_replicas": 1,
+		"index": {
+			"analysis": {
+				"analyzer": {
+					"korean": {
+						"filter": [
+							"npos_filter",
+							"nori_readingform",
+							"lowercase"
+						],
+						"tokenizer": "nori_user_dict"
+					}
+				},
+				"tokenizer": {
+					"nori_user_dict": {
+						"mode": "MIXED",
+						"type": "nori_tokenizer",
+						"user_dictionary": "userdic_ko.txt"
+					}
+				},
+				"filter": {
+					"npos_filter": {
+						"type": "nori_part_of_speech",
+						"stoptags": [
+							"E",
+							"IC",
+							"J",
+							"MAG",
+							"MM",
+							"SP",
+							"SSC",
+
+							"SSO",
+							"SC",
+							"SE",
+							"XPN",
+							"XSA",
+
+							"XSN",
+							"XSV",
+							"UNA",
+							"NA",
+							"VSV"
+						]
+					}
+				}
+			}
+		}
+	},
+	"mappings": {
+		"metadata": {
+			"properties": {
+				"title": { "type": "text", "boost": 10, "analyzer": "korean" },
+				"author": { "type": "keyword", "boost": 10 },
+				"belong": { "type": "keyword", "boost": 5 },
+				"publishedyear": { "type": "integer" },
+				"body": {
+					"type": "text",
+					"analyzer": "korean"
+				}
+			}
+		}
+	}
+}

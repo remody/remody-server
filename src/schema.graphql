@@ -5,6 +5,7 @@ type Query {
 	userSchemas: [UserSchema!]!
 	pythonExample: Boolean
 	mysqlConnection: Boolean
+	elasticSearchConnection: Boolean
 	UserSchemaInfo(schemaId: String!): SchemaInfo!
 }
 

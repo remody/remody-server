@@ -6,7 +6,7 @@ type Query {
 	pythonExample: Boolean
 	mysqlConnection: Boolean
 	UserSchemaInfo(schemaId: String!): SchemaInfo!
-	papers(first: Int, after: String): [Paper!]!
+	papers(first: Int, after: String, queryString: String): [Paper!]!
 }
 
 type Mutation {

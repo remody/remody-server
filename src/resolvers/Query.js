@@ -130,15 +130,15 @@ const Query = {
 			throw new Error("MySQL Error");
 		}
 	},
-	papers(parent, { first, after }, { prisma }, info) {
+	papers(parent, { first, after, queryString }, { prisma }, info) {
+		const args = { first };
+		console.log(queryString);
+		if (queryString) {
+			//1. 여기에 엘라스틱 서치 쿼리문 날리고
+			//2. 프리즈마에 그 아이디에 해당하는 값 가져오기
+		}
 		if (after) {
-			return prisma.query.papers(
-				{
-					first,
-					after
-				},
-				info
-			);
+			args.after = after;
 		}
 		return prisma.query.papers({ first }, info);
 	}

@@ -379,6 +379,45 @@ const Mutation = {
 		} catch (err) {
 			throw new Error(`MySQL error:Select error\n${err}`);
 		}
+	},
+	async uploadForSearch(
+		parent,
+		{
+			data: { title, author, belong, publishedyear, file }
+		},
+		{ prisma, request },
+		info
+	) {
+		const header = request.headers.authorization;
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const token = header.replace("Bearer ", "");
+		console.log("----");
+		console.log(file);
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const { filename, mimetype, encoding, path } = await processUpload(
+			file,
+			userId
+		);
+		//파일을 파이썬으로 해석
+		//엘라스틱 서치에 저장
+		//다운로드를 하게 하려면 S3에 저장하고 그 주소를 Paper객체에 전달
+		//프리즈마에 새파일 생성
+		try {
+			const result = await prisma.mutation.createPaper({
+				data: {
+					title,
+					author,
+					belong,
+					publishedyear,
+					owner: { connect: { id: userId } }
+				}
+			});
+			return true;
+		} catch (err) {
+			throw new Error(`PrismaError:\n${err}`);
+		}
 	}
 };
 

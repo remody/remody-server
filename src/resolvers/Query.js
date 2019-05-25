@@ -130,7 +130,7 @@ const Query = {
 			throw new Error("MySQL Error");
 		}
 	},
-	papers(parent, { first = 6, after }, { prisma }, info) {
+	papers(parent, { first, after }, { prisma }, info) {
 		if (after) {
 			return prisma.query.papers(
 				{
@@ -140,12 +140,7 @@ const Query = {
 				info
 			);
 		}
-		return prisma.query.papers(
-			{
-				first
-			},
-			info
-		);
+		return prisma.query.papers({ first }, info);
 	}
 };
 

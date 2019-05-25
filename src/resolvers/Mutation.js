@@ -393,8 +393,6 @@ const Mutation = {
 			throw new Error("Authentication Needed");
 		}
 		const token = header.replace("Bearer ", "");
-		console.log("----");
-		console.log(file);
 		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
 		const { filename, mimetype, encoding, path } = await processUpload(
 			file,

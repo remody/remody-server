@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
+var _slicedToArray2 = require("babel-runtime/helpers/slicedToArray");
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
 var _regenerator = require("babel-runtime/regenerator");
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
@@ -87,8 +91,7 @@ var Query = {
 		}, info);
 	},
 	mysqlConnection: function () {
-		var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(parent, args, _ref5, info) {
-			var mysql = _ref5.mysql;
+		var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(parent, args, info) {
 			var result;
 			return _regenerator2.default.wrap(function _callee$(_context) {
 				while (1) {
@@ -96,7 +99,7 @@ var Query = {
 						case 0:
 							_context.prev = 0;
 							_context.next = 3;
-							return (0, _mysql.query)(mysql, "SELECT * FROM professor");
+							return (0, _mysql.query)("SELECT * FROM professor");
 
 						case 3:
 							result = _context.sent;
@@ -121,14 +124,62 @@ var Query = {
 			}, _callee, this, [[0, 7]]);
 		}));
 
-		function mysqlConnection(_x, _x2, _x3, _x4) {
-			return _ref6.apply(this, arguments);
+		function mysqlConnection(_x, _x2, _x3) {
+			return _ref5.apply(this, arguments);
 		}
 
 		return mysqlConnection;
 	}(),
-	pythonExample: function pythonExample(parent, args, _ref7, info) {
-		var prisma = _ref7.prisma;
+	elasticSearchConnection: function () {
+		var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(parent, args, _ref6, info) {
+			var elastic = _ref6.elastic;
+			var result;
+			return _regenerator2.default.wrap(function _callee2$(_context2) {
+				while (1) {
+					switch (_context2.prev = _context2.next) {
+						case 0:
+							_context2.prev = 0;
+							_context2.next = 3;
+							return elastic.search({
+								index: "paper",
+								body: {
+									query: {
+										match_all: {}
+									}
+								}
+							});
+
+						case 3:
+							result = _context2.sent;
+
+							console.log(result);
+							_context2.next = 10;
+							break;
+
+						case 7:
+							_context2.prev = 7;
+							_context2.t0 = _context2["catch"](0);
+							throw new Error(_context2.t0);
+
+						case 10:
+							return _context2.abrupt("return", true);
+
+						case 11:
+						case "end":
+							return _context2.stop();
+					}
+				}
+			}, _callee2, this, [[0, 7]]);
+		}));
+
+		function elasticSearchConnection(_x4, _x5, _x6, _x7) {
+			return _ref7.apply(this, arguments);
+		}
+
+		return elasticSearchConnection;
+	}(),
+	pythonExample: function pythonExample(parent, args, _ref8, info) {
+		var prisma = _ref8.prisma;
 
 		var options = {
 			mode: "text",
@@ -149,7 +200,113 @@ var Query = {
 		});
 
 		return true;
-	}
+	},
+	UserSchemaInfo: function () {
+		var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(parent, _ref9, _ref10, info) {
+			var schemaId = _ref9.schemaId;
+			var request = _ref10.request,
+			    prisma = _ref10.prisma;
+
+			var header, token, _jwt$decode4, id, rightUserCheck, _ref12, _ref13, fieldQuery, rows, fields, _ref14, _ref15, nextId;
+
+			return _regenerator2.default.wrap(function _callee3$(_context3) {
+				while (1) {
+					switch (_context3.prev = _context3.next) {
+						case 0:
+							header = request.headers.authorization;
+							token = header.replace("Bearer ", "");
+
+							if (header) {
+								_context3.next = 4;
+								break;
+							}
+
+							throw new Error("Authentication Needed");
+
+						case 4:
+							_jwt$decode4 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), id = _jwt$decode4.userId;
+							_context3.next = 7;
+							return prisma.query.userSchema({
+								where: { id: schemaId }
+							}, "{ id name user { id } }");
+
+						case 7:
+							rightUserCheck = _context3.sent;
+
+							if (rightUserCheck) {
+								_context3.next = 10;
+								break;
+							}
+
+							throw new Error("No UserSchema found");
+
+						case 10:
+							if (!(rightUserCheck.user.id !== id)) {
+								_context3.next = 12;
+								break;
+							}
+
+							throw new Error("You can't get Schema Info");
+
+						case 12:
+							_context3.prev = 12;
+							_context3.next = 15;
+							return Promise.all([(0, _mysql.query)("show full columns from " + id + "_" + rightUserCheck.name + ";"), (0, _mysql.query)("SELECT * FROM " + id + "_" + rightUserCheck.name + ";")]);
+
+						case 15:
+							_ref12 = _context3.sent;
+							_ref13 = (0, _slicedToArray3.default)(_ref12, 2);
+							fieldQuery = _ref13[0];
+							rows = _ref13[1];
+							fields = fieldQuery.map(function (item) {
+								return item.Field;
+							});
+
+							if (!(rows.length >= 1)) {
+								_context3.next = 26;
+								break;
+							}
+
+							_context3.next = 23;
+							return (0, _mysql.query)("SELECT id FROM " + id + "_" + rightUserCheck.name + " ORDER BY id DESC LIMIT 1;");
+
+						case 23:
+							_context3.t0 = _context3.sent;
+							_context3.next = 27;
+							break;
+
+						case 26:
+							_context3.t0 = [{ id: 0 }];
+
+						case 27:
+							_ref14 = _context3.t0;
+							_ref15 = (0, _slicedToArray3.default)(_ref14, 1);
+							nextId = _ref15[0].id;
+							return _context3.abrupt("return", {
+								fields: fields,
+								rows: rows,
+								nextId: nextId
+							});
+
+						case 33:
+							_context3.prev = 33;
+							_context3.t1 = _context3["catch"](12);
+							throw new Error("MySQL Error");
+
+						case 36:
+						case "end":
+							return _context3.stop();
+					}
+				}
+			}, _callee3, this, [[12, 33]]);
+		}));
+
+		function UserSchemaInfo(_x8, _x9, _x10, _x11) {
+			return _ref11.apply(this, arguments);
+		}
+
+		return UserSchemaInfo;
+	}()
 };
 
 exports.default = Query;

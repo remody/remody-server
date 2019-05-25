@@ -64,6 +64,38 @@ const Query = {
 		}
 		return true;
 	},
+	async elasticSearchConnection(parent, args, { elastic }, info) {
+		try {
+			const result = await elastic.search({
+				index: "paper",
+				body: {
+					query: {
+						bool: {
+							must: [
+								{
+									query_string: {
+										query: "노래방"
+									}
+								}
+							],
+							must_not: [],
+							should: []
+						}
+					},
+					from: 0,
+					size: 10,
+					sort: [],
+					aggs: {}
+				}
+			});
+			console.log(result.body);
+			console.log(result.body.hits.hits.map(item => item._source));
+		} catch (err) {
+			throw new Error(err);
+		}
+
+		return true;
+	},
 	pythonExample(parent, args, { prisma }, info) {
 		const options = {
 			mode: "text",

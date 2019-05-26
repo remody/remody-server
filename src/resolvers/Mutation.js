@@ -396,9 +396,11 @@ const Mutation = {
 		const token = header.replace("Bearer ", "");
 		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
 		const { path } = await processUpload(file, userId);
+		const copyPath = path.substr(0, path.indexOf(".pdf")) + "_copyed.pdf";
+		fs.copyFileSync(path, copyPath);
 
 		const uploadPath =
-			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + path;
+			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + copyPath;
 		const pythonResult = await pythonShell("elastic.py", [
 			uploadPath,
 			title,
@@ -420,6 +422,7 @@ const Mutation = {
 						author,
 						belong,
 						publishedyear,
+						url: path,
 						owner: { connect: { id: userId } }
 					}
 				},
@@ -429,8 +432,9 @@ const Mutation = {
 		} catch (err) {
 			throw new Error(`PrismaError:\n${err}`);
 		}
-		//다운로드를 하게 하려면 S3에 저장하고 그 주소를 Paper객체에 전달
+
 		const bulkData = fs.readFileSync(jsonPath);
+		fs.unlinkSync(jsonPath);
 		const json = JSON.parse(bulkData.toString());
 		try {
 			await elastic.create({

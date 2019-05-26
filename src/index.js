@@ -1,4 +1,5 @@
 import { GraphQLServer } from "graphql-yoga";
+import express from "express";
 import Query from "./resolvers/Query";
 import Mutation from "./resolvers/Mutation";
 import Subscription from "./resolvers/Subscription";
@@ -22,6 +23,8 @@ const server = new GraphQLServer({
 		};
 	}
 });
+
+server.express.use("/uploads", express.static("uploads"));
 
 server.start(() => {
 	console.log("The server is up!");

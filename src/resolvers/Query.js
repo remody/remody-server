@@ -75,7 +75,7 @@ const Query = {
 							must: [
 								{
 									query_string: {
-										query: "노래방"
+										query: "논문"
 									}
 								}
 							],
@@ -147,14 +147,48 @@ const Query = {
 			throw new Error("MySQL Error");
 		}
 	},
-	papers(parent, { first, after, queryString }, { prisma }, info) {
+	async papers(
+		parent,
+		{ first, after, queryString },
+		{ prisma, elastic },
+		info
+	) {
 		const args = { first };
-		if (queryString) {
-			//1. 여기에 엘라스틱 서치 쿼리문 날리고
-			//2. 프리즈마에 그 아이디에 해당하는 값 가져오기
-		}
 		if (after) {
 			args.after = after;
+		}
+		if (queryString) {
+			try {
+				const result = await elastic.search({
+					index: "paper",
+					body: {
+						query: {
+							bool: {
+								must: [
+									{
+										query_string: {
+											query: queryString
+										}
+									}
+								],
+								must_not: [],
+								should: []
+							}
+						},
+						from: 0,
+						size: 100,
+						sort: [],
+						aggs: {}
+					}
+				});
+				const ids = result.body.hits.hits.map(item => item._id);
+				return prisma.query.papers(
+					{ first, where: { id_in: ids } },
+					info
+				);
+			} catch (err) {
+				throw new Error(err);
+			}
 		}
 		return prisma.query.papers({ first }, info);
 	}

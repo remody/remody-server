@@ -6,6 +6,8 @@ import shortid from "shortid";
 import nodemailer from "nodemailer";
 import smtpTransport from "nodemailer-smtp-transport";
 import { query } from "../utils/mysql";
+import { pythonShell } from "../utils/python";
+import { FSx } from "aws-sdk";
 
 const uploadDir = `uploads`;
 
@@ -398,7 +400,22 @@ const Mutation = {
 			file,
 			userId
 		);
+
+		const uploadPath =
+			__dirname.substr(0, __dirname.indexOf("/src")) + path;
+		await pythonShell("elastic.py", [
+			uploadPath,
+			title,
+			author,
+			belong,
+			publishedyear
+		]);
+		const txtPath =
+			uploadPath.substr(0, __dirname.indexOf(".pdf")) + ".json";
+		const bulkData = fs.readFileSync(txtPath);
+		console.log(bulkData);
 		//파일을 파이썬으로 해석
+
 		//엘라스틱 서치에 저장
 		//다운로드를 하게 하려면 S3에 저장하고 그 주소를 Paper객체에 전달
 		//프리즈마에 새파일 생성

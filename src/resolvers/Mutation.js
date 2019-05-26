@@ -1,13 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { createWriteStream } from "fs";
+import fs, { createWriteStream } from "fs";
 import mkdirp from "mkdirp";
 import shortid from "shortid";
 import nodemailer from "nodemailer";
 import smtpTransport from "nodemailer-smtp-transport";
 import { query } from "../utils/mysql";
 import { pythonShell } from "../utils/python";
-import fs from "fs";
 
 const uploadDir = `uploads`;
 
@@ -387,7 +386,7 @@ const Mutation = {
 		{
 			data: { title, author, belong, publishedyear, file }
 		},
-		{ prisma, request },
+		{ prisma, request, elastic },
 		info
 	) {
 		const header = request.headers.authorization;
@@ -396,10 +395,7 @@ const Mutation = {
 		}
 		const token = header.replace("Bearer ", "");
 		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		const { filename, mimetype, encoding, path } = await processUpload(
-			file,
-			userId
-		);
+		const { path } = await processUpload(file, userId);
 
 		const uploadPath =
 			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + path;
@@ -414,15 +410,7 @@ const Mutation = {
 		if (pythonResult[0] === "NO") {
 			throw new Error("File size is so big");
 		}
-
 		const jsonPath = pythonResult[0];
-		const bulkData = fs.readFileSync(jsonPath);
-		const json = JSON.parse(bulkData.toString());
-		console.log(json);
-		//파일을 파이썬으로 해석
-		//프리즈마에 새파일 생성
-		//엘라스틱 서치에 저장
-		//다운로드를 하게 하려면 S3에 저장하고 그 주소를 Paper객체에 전달
 		let PaperId;
 		try {
 			const result = await prisma.mutation.createPaper(
@@ -437,11 +425,26 @@ const Mutation = {
 				},
 				"{ id }"
 			);
-			console.log(result);
-			return true;
+			PaperId = result.id;
 		} catch (err) {
 			throw new Error(`PrismaError:\n${err}`);
 		}
+		//다운로드를 하게 하려면 S3에 저장하고 그 주소를 Paper객체에 전달
+		const bulkData = fs.readFileSync(jsonPath);
+		const json = JSON.parse(bulkData.toString());
+		try {
+			const elasticResult = await elastic.bulk({
+				index: "paper",
+				type: "metadata",
+				id: PaperId,
+				body: json
+			});
+			console.log(elasticResult);
+		} catch (err) {
+			throw new Error(err);
+		}
+
+		return true;
 	}
 };
 

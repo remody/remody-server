@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { PythonShell } from "python-shell";
 import { query } from "../utils/mysql";
+import { pythonShell } from "../utils/python";
 const Query = {
 	users(parent, args, { prisma }, info) {
 		const onArgs = {};
@@ -25,7 +26,6 @@ const Query = {
 	},
 	files(parent, args, { prisma }, info) {
 		const { userId } = jwt.decode(args.token, process.env["REMODY_SECRET"]);
-		console.log(userId);
 		return prisma.query.files(
 			{
 				where: {
@@ -65,24 +65,41 @@ const Query = {
 		}
 		return true;
 	},
-	pythonExample(parent, args, { prisma }, info) {
-		const options = {
-			mode: "text",
+	async elasticSearchConnection(parent, args, { elastic }, info) {
+		try {
+			const result = await elastic.search({
+				index: "paper",
+				body: {
+					query: {
+						bool: {
+							must: [
+								{
+									query_string: {
+										query: "논문"
+									}
+								}
+							],
+							must_not: [],
+							should: []
+						}
+					},
+					from: 0,
+					size: 10,
+					sort: [],
+					aggs: {}
+				}
+			});
+			console.log(result.body);
+			console.log(result.body.hits.hits.map(item => item._source));
+		} catch (err) {
+			throw new Error(err);
+		}
 
-			pythonPath: "",
-
-			pythonOptions: ["-u"],
-
-			scriptPath: `${__dirname}/../python`,
-
-			args: ["value1", "value2", "value3"]
-		};
-
-		PythonShell.run("example.py", options, function(err, results) {
-			if (err) throw err;
-
-			console.log("results: %j", results);
-		});
+		return true;
+	},
+	async pythonExample(parent, args, ctx, info) {
+		const result = await pythonShell("example.py");
+		console.log(result);
 
 		return true;
 	},
@@ -108,14 +125,14 @@ const Query = {
 
 		try {
 			const [fieldQuery, rows] = await Promise.all([
-				query(`show full columns from ${rightUserCheck.name};`),
-				query(`SELECT * FROM ${rightUserCheck.name};`)
+				query(`show full columns from ${id}_${rightUserCheck.name};`),
+				query(`SELECT * FROM ${id}_${rightUserCheck.name};`)
 			]);
 			const fields = fieldQuery.map(item => item.Field);
 			const [{ id: nextId }] =
 				rows.length >= 1
 					? await query(
-							`SELECT id FROM ${
+							`SELECT id FROM ${id}_${
 								rightUserCheck.name
 							} ORDER BY id DESC LIMIT 1;`
 					  )
@@ -129,6 +146,51 @@ const Query = {
 		} catch (err) {
 			throw new Error("MySQL Error");
 		}
+	},
+	async papers(
+		parent,
+		{ first, after, queryString },
+		{ prisma, elastic },
+		info
+	) {
+		const args = { first };
+		if (after) {
+			args.after = after;
+		}
+		if (queryString) {
+			try {
+				const result = await elastic.search({
+					index: "paper",
+					body: {
+						query: {
+							bool: {
+								must: [
+									{
+										query_string: {
+											query: queryString
+										}
+									}
+								],
+								must_not: [],
+								should: []
+							}
+						},
+						from: 0,
+						size: 100,
+						sort: [],
+						aggs: {}
+					}
+				});
+				const ids = result.body.hits.hits.map(item => item._id);
+				return prisma.query.papers(
+					{ first, where: { id_in: ids } },
+					info
+				);
+			} catch (err) {
+				throw new Error(err);
+			}
+		}
+		return prisma.query.papers({ first }, info);
 	}
 };
 

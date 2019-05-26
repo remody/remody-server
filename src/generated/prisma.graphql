@@ -1,11 +1,19 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Tue May 21 2019 16:34:34 GMT+0900 (대한민국 표준시)
+# timestamp: Sun May 26 2019 23:54:48 GMT+0900 (대한민국 표준시)
 
 type AggregateAuthAccessCode {
   count: Int!
 }
 
+type AggregateColumn {
+  count: Int!
+}
+
 type AggregateFile {
+  count: Int!
+}
+
+type AggregatePaper {
   count: Int!
 }
 
@@ -209,6 +217,409 @@ input AuthAccessCodeWhereUniqueInput {
 type BatchPayload {
   """The number of nodes that have been affected by the Batch operation."""
   count: Long!
+}
+
+type Column implements Node {
+  id: ID!
+  name: String!
+  type: ColumnType!
+  length: Int
+}
+
+"""A connection to a list of items."""
+type ColumnConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ColumnEdge]!
+  aggregate: AggregateColumn!
+}
+
+input ColumnCreateInput {
+  id: ID
+  name: String!
+  type: ColumnType!
+  length: Int
+}
+
+input ColumnCreateManyInput {
+  create: [ColumnCreateInput!]
+  connect: [ColumnWhereUniqueInput!]
+}
+
+"""An edge in a connection."""
+type ColumnEdge {
+  """The item at the end of the edge."""
+  node: Column!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ColumnOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  type_ASC
+  type_DESC
+  length_ASC
+  length_DESC
+}
+
+type ColumnPreviousValues {
+  id: ID!
+  name: String!
+  type: ColumnType!
+  length: Int
+}
+
+input ColumnScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ColumnScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ColumnScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ColumnScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  type: ColumnType
+
+  """All values that are not equal to given value."""
+  type_not: ColumnType
+
+  """All values that are contained in given list."""
+  type_in: [ColumnType!]
+
+  """All values that are not contained in given list."""
+  type_not_in: [ColumnType!]
+  length: Int
+
+  """All values that are not equal to given value."""
+  length_not: Int
+
+  """All values that are contained in given list."""
+  length_in: [Int!]
+
+  """All values that are not contained in given list."""
+  length_not_in: [Int!]
+
+  """All values less than the given value."""
+  length_lt: Int
+
+  """All values less than or equal the given value."""
+  length_lte: Int
+
+  """All values greater than the given value."""
+  length_gt: Int
+
+  """All values greater than or equal the given value."""
+  length_gte: Int
+}
+
+type ColumnSubscriptionPayload {
+  mutation: MutationType!
+  node: Column
+  updatedFields: [String!]
+  previousValues: ColumnPreviousValues
+}
+
+input ColumnSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ColumnSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ColumnSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ColumnSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ColumnWhereInput
+}
+
+enum ColumnType {
+  VARCHAR
+  DATETIME
+  Int
+}
+
+input ColumnUpdateDataInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateManyDataInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateManyInput {
+  create: [ColumnCreateInput!]
+  connect: [ColumnWhereUniqueInput!]
+  set: [ColumnWhereUniqueInput!]
+  disconnect: [ColumnWhereUniqueInput!]
+  delete: [ColumnWhereUniqueInput!]
+  update: [ColumnUpdateWithWhereUniqueNestedInput!]
+  updateMany: [ColumnUpdateManyWithWhereNestedInput!]
+  deleteMany: [ColumnScalarWhereInput!]
+  upsert: [ColumnUpsertWithWhereUniqueNestedInput!]
+}
+
+input ColumnUpdateManyMutationInput {
+  name: String
+  type: ColumnType
+  length: Int
+}
+
+input ColumnUpdateManyWithWhereNestedInput {
+  where: ColumnScalarWhereInput!
+  data: ColumnUpdateManyDataInput!
+}
+
+input ColumnUpdateWithWhereUniqueNestedInput {
+  where: ColumnWhereUniqueInput!
+  data: ColumnUpdateDataInput!
+}
+
+input ColumnUpsertWithWhereUniqueNestedInput {
+  where: ColumnWhereUniqueInput!
+  update: ColumnUpdateDataInput!
+  create: ColumnCreateInput!
+}
+
+input ColumnWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ColumnWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ColumnWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ColumnWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  type: ColumnType
+
+  """All values that are not equal to given value."""
+  type_not: ColumnType
+
+  """All values that are contained in given list."""
+  type_in: [ColumnType!]
+
+  """All values that are not contained in given list."""
+  type_not_in: [ColumnType!]
+  length: Int
+
+  """All values that are not equal to given value."""
+  length_not: Int
+
+  """All values that are contained in given list."""
+  length_in: [Int!]
+
+  """All values that are not contained in given list."""
+  length_not_in: [Int!]
+
+  """All values less than the given value."""
+  length_lt: Int
+
+  """All values less than or equal the given value."""
+  length_lte: Int
+
+  """All values greater than the given value."""
+  length_gt: Int
+
+  """All values greater than or equal the given value."""
+  length_gte: Int
+}
+
+input ColumnWhereUniqueInput {
+  id: ID
 }
 
 scalar DateTime
@@ -914,26 +1325,38 @@ type Mutation {
   createFile(data: FileCreateInput!): File!
   createAuthAccessCode(data: AuthAccessCodeCreateInput!): AuthAccessCode!
   createUserSchema(data: UserSchemaCreateInput!): UserSchema!
+  createPaper(data: PaperCreateInput!): Paper!
   createUser(data: UserCreateInput!): User!
+  createColumn(data: ColumnCreateInput!): Column!
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateAuthAccessCode(data: AuthAccessCodeUpdateInput!, where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
   updateUserSchema(data: UserSchemaUpdateInput!, where: UserSchemaWhereUniqueInput!): UserSchema
+  updatePaper(data: PaperUpdateInput!, where: PaperWhereUniqueInput!): Paper
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateColumn(data: ColumnUpdateInput!, where: ColumnWhereUniqueInput!): Column
   deleteFile(where: FileWhereUniqueInput!): File
   deleteAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
   deleteUserSchema(where: UserSchemaWhereUniqueInput!): UserSchema
+  deletePaper(where: PaperWhereUniqueInput!): Paper
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteColumn(where: ColumnWhereUniqueInput!): Column
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertAuthAccessCode(where: AuthAccessCodeWhereUniqueInput!, create: AuthAccessCodeCreateInput!, update: AuthAccessCodeUpdateInput!): AuthAccessCode!
   upsertUserSchema(where: UserSchemaWhereUniqueInput!, create: UserSchemaCreateInput!, update: UserSchemaUpdateInput!): UserSchema!
+  upsertPaper(where: PaperWhereUniqueInput!, create: PaperCreateInput!, update: PaperUpdateInput!): Paper!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertColumn(where: ColumnWhereUniqueInput!, create: ColumnCreateInput!, update: ColumnUpdateInput!): Column!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManyUserSchemas(data: UserSchemaUpdateManyMutationInput!, where: UserSchemaWhereInput): BatchPayload!
+  updateManyPapers(data: PaperUpdateManyMutationInput!, where: PaperWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyColumns(data: ColumnUpdateManyMutationInput!, where: ColumnWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManyAuthAccessCodes(where: AuthAccessCodeWhereInput): BatchPayload!
   deleteManyUserSchemas(where: UserSchemaWhereInput): BatchPayload!
+  deleteManyPapers(where: PaperWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyColumns(where: ColumnWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -963,19 +1386,673 @@ type PageInfo {
   endCursor: String
 }
 
+type Paper implements Node {
+  id: ID!
+  owner: User!
+  title: String!
+  author: String!
+  belong: String!
+  publishedyear: Int!
+  url: String!
+}
+
+"""A connection to a list of items."""
+type PaperConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [PaperEdge]!
+  aggregate: AggregatePaper!
+}
+
+input PaperCreateInput {
+  id: ID
+  title: String!
+  author: String!
+  belong: String!
+  publishedyear: Int!
+  url: String!
+  owner: UserCreateOneWithoutPapersInput!
+}
+
+input PaperCreateManyWithoutOwnerInput {
+  create: [PaperCreateWithoutOwnerInput!]
+  connect: [PaperWhereUniqueInput!]
+}
+
+input PaperCreateWithoutOwnerInput {
+  id: ID
+  title: String!
+  author: String!
+  belong: String!
+  publishedyear: Int!
+  url: String!
+}
+
+"""An edge in a connection."""
+type PaperEdge {
+  """The item at the end of the edge."""
+  node: Paper!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum PaperOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  author_ASC
+  author_DESC
+  belong_ASC
+  belong_DESC
+  publishedyear_ASC
+  publishedyear_DESC
+  url_ASC
+  url_DESC
+}
+
+type PaperPreviousValues {
+  id: ID!
+  title: String!
+  author: String!
+  belong: String!
+  publishedyear: Int!
+  url: String!
+}
+
+input PaperScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PaperScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PaperScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PaperScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  author: String
+
+  """All values that are not equal to given value."""
+  author_not: String
+
+  """All values that are contained in given list."""
+  author_in: [String!]
+
+  """All values that are not contained in given list."""
+  author_not_in: [String!]
+
+  """All values less than the given value."""
+  author_lt: String
+
+  """All values less than or equal the given value."""
+  author_lte: String
+
+  """All values greater than the given value."""
+  author_gt: String
+
+  """All values greater than or equal the given value."""
+  author_gte: String
+
+  """All values containing the given string."""
+  author_contains: String
+
+  """All values not containing the given string."""
+  author_not_contains: String
+
+  """All values starting with the given string."""
+  author_starts_with: String
+
+  """All values not starting with the given string."""
+  author_not_starts_with: String
+
+  """All values ending with the given string."""
+  author_ends_with: String
+
+  """All values not ending with the given string."""
+  author_not_ends_with: String
+  belong: String
+
+  """All values that are not equal to given value."""
+  belong_not: String
+
+  """All values that are contained in given list."""
+  belong_in: [String!]
+
+  """All values that are not contained in given list."""
+  belong_not_in: [String!]
+
+  """All values less than the given value."""
+  belong_lt: String
+
+  """All values less than or equal the given value."""
+  belong_lte: String
+
+  """All values greater than the given value."""
+  belong_gt: String
+
+  """All values greater than or equal the given value."""
+  belong_gte: String
+
+  """All values containing the given string."""
+  belong_contains: String
+
+  """All values not containing the given string."""
+  belong_not_contains: String
+
+  """All values starting with the given string."""
+  belong_starts_with: String
+
+  """All values not starting with the given string."""
+  belong_not_starts_with: String
+
+  """All values ending with the given string."""
+  belong_ends_with: String
+
+  """All values not ending with the given string."""
+  belong_not_ends_with: String
+  publishedyear: Int
+
+  """All values that are not equal to given value."""
+  publishedyear_not: Int
+
+  """All values that are contained in given list."""
+  publishedyear_in: [Int!]
+
+  """All values that are not contained in given list."""
+  publishedyear_not_in: [Int!]
+
+  """All values less than the given value."""
+  publishedyear_lt: Int
+
+  """All values less than or equal the given value."""
+  publishedyear_lte: Int
+
+  """All values greater than the given value."""
+  publishedyear_gt: Int
+
+  """All values greater than or equal the given value."""
+  publishedyear_gte: Int
+  url: String
+
+  """All values that are not equal to given value."""
+  url_not: String
+
+  """All values that are contained in given list."""
+  url_in: [String!]
+
+  """All values that are not contained in given list."""
+  url_not_in: [String!]
+
+  """All values less than the given value."""
+  url_lt: String
+
+  """All values less than or equal the given value."""
+  url_lte: String
+
+  """All values greater than the given value."""
+  url_gt: String
+
+  """All values greater than or equal the given value."""
+  url_gte: String
+
+  """All values containing the given string."""
+  url_contains: String
+
+  """All values not containing the given string."""
+  url_not_contains: String
+
+  """All values starting with the given string."""
+  url_starts_with: String
+
+  """All values not starting with the given string."""
+  url_not_starts_with: String
+
+  """All values ending with the given string."""
+  url_ends_with: String
+
+  """All values not ending with the given string."""
+  url_not_ends_with: String
+}
+
+type PaperSubscriptionPayload {
+  mutation: MutationType!
+  node: Paper
+  updatedFields: [String!]
+  previousValues: PaperPreviousValues
+}
+
+input PaperSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PaperSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PaperSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PaperSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: PaperWhereInput
+}
+
+input PaperUpdateInput {
+  title: String
+  author: String
+  belong: String
+  publishedyear: Int
+  url: String
+  owner: UserUpdateOneRequiredWithoutPapersInput
+}
+
+input PaperUpdateManyDataInput {
+  title: String
+  author: String
+  belong: String
+  publishedyear: Int
+  url: String
+}
+
+input PaperUpdateManyMutationInput {
+  title: String
+  author: String
+  belong: String
+  publishedyear: Int
+  url: String
+}
+
+input PaperUpdateManyWithoutOwnerInput {
+  create: [PaperCreateWithoutOwnerInput!]
+  connect: [PaperWhereUniqueInput!]
+  set: [PaperWhereUniqueInput!]
+  disconnect: [PaperWhereUniqueInput!]
+  delete: [PaperWhereUniqueInput!]
+  update: [PaperUpdateWithWhereUniqueWithoutOwnerInput!]
+  updateMany: [PaperUpdateManyWithWhereNestedInput!]
+  deleteMany: [PaperScalarWhereInput!]
+  upsert: [PaperUpsertWithWhereUniqueWithoutOwnerInput!]
+}
+
+input PaperUpdateManyWithWhereNestedInput {
+  where: PaperScalarWhereInput!
+  data: PaperUpdateManyDataInput!
+}
+
+input PaperUpdateWithoutOwnerDataInput {
+  title: String
+  author: String
+  belong: String
+  publishedyear: Int
+  url: String
+}
+
+input PaperUpdateWithWhereUniqueWithoutOwnerInput {
+  where: PaperWhereUniqueInput!
+  data: PaperUpdateWithoutOwnerDataInput!
+}
+
+input PaperUpsertWithWhereUniqueWithoutOwnerInput {
+  where: PaperWhereUniqueInput!
+  update: PaperUpdateWithoutOwnerDataInput!
+  create: PaperCreateWithoutOwnerInput!
+}
+
+input PaperWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PaperWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PaperWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PaperWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  author: String
+
+  """All values that are not equal to given value."""
+  author_not: String
+
+  """All values that are contained in given list."""
+  author_in: [String!]
+
+  """All values that are not contained in given list."""
+  author_not_in: [String!]
+
+  """All values less than the given value."""
+  author_lt: String
+
+  """All values less than or equal the given value."""
+  author_lte: String
+
+  """All values greater than the given value."""
+  author_gt: String
+
+  """All values greater than or equal the given value."""
+  author_gte: String
+
+  """All values containing the given string."""
+  author_contains: String
+
+  """All values not containing the given string."""
+  author_not_contains: String
+
+  """All values starting with the given string."""
+  author_starts_with: String
+
+  """All values not starting with the given string."""
+  author_not_starts_with: String
+
+  """All values ending with the given string."""
+  author_ends_with: String
+
+  """All values not ending with the given string."""
+  author_not_ends_with: String
+  belong: String
+
+  """All values that are not equal to given value."""
+  belong_not: String
+
+  """All values that are contained in given list."""
+  belong_in: [String!]
+
+  """All values that are not contained in given list."""
+  belong_not_in: [String!]
+
+  """All values less than the given value."""
+  belong_lt: String
+
+  """All values less than or equal the given value."""
+  belong_lte: String
+
+  """All values greater than the given value."""
+  belong_gt: String
+
+  """All values greater than or equal the given value."""
+  belong_gte: String
+
+  """All values containing the given string."""
+  belong_contains: String
+
+  """All values not containing the given string."""
+  belong_not_contains: String
+
+  """All values starting with the given string."""
+  belong_starts_with: String
+
+  """All values not starting with the given string."""
+  belong_not_starts_with: String
+
+  """All values ending with the given string."""
+  belong_ends_with: String
+
+  """All values not ending with the given string."""
+  belong_not_ends_with: String
+  publishedyear: Int
+
+  """All values that are not equal to given value."""
+  publishedyear_not: Int
+
+  """All values that are contained in given list."""
+  publishedyear_in: [Int!]
+
+  """All values that are not contained in given list."""
+  publishedyear_not_in: [Int!]
+
+  """All values less than the given value."""
+  publishedyear_lt: Int
+
+  """All values less than or equal the given value."""
+  publishedyear_lte: Int
+
+  """All values greater than the given value."""
+  publishedyear_gt: Int
+
+  """All values greater than or equal the given value."""
+  publishedyear_gte: Int
+  url: String
+
+  """All values that are not equal to given value."""
+  url_not: String
+
+  """All values that are contained in given list."""
+  url_in: [String!]
+
+  """All values that are not contained in given list."""
+  url_not_in: [String!]
+
+  """All values less than the given value."""
+  url_lt: String
+
+  """All values less than or equal the given value."""
+  url_lte: String
+
+  """All values greater than the given value."""
+  url_gt: String
+
+  """All values greater than or equal the given value."""
+  url_gte: String
+
+  """All values containing the given string."""
+  url_contains: String
+
+  """All values not containing the given string."""
+  url_not_contains: String
+
+  """All values starting with the given string."""
+  url_starts_with: String
+
+  """All values not starting with the given string."""
+  url_not_starts_with: String
+
+  """All values ending with the given string."""
+  url_ends_with: String
+
+  """All values not ending with the given string."""
+  url_not_ends_with: String
+  owner: UserWhereInput
+}
+
+input PaperWhereUniqueInput {
+  id: ID
+}
+
 type Query {
   files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
   authAccessCodes(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [AuthAccessCode]!
   userSchemas(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserSchema]!
+  papers(where: PaperWhereInput, orderBy: PaperOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Paper]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  columns(where: ColumnWhereInput, orderBy: ColumnOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Column]!
   file(where: FileWhereUniqueInput!): File
   authAccessCode(where: AuthAccessCodeWhereUniqueInput!): AuthAccessCode
   userSchema(where: UserSchemaWhereUniqueInput!): UserSchema
+  paper(where: PaperWhereUniqueInput!): Paper
   user(where: UserWhereUniqueInput!): User
+  column(where: ColumnWhereUniqueInput!): Column
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   authAccessCodesConnection(where: AuthAccessCodeWhereInput, orderBy: AuthAccessCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AuthAccessCodeConnection!
   userSchemasConnection(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserSchemaConnection!
+  papersConnection(where: PaperWhereInput, orderBy: PaperOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PaperConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  columnsConnection(where: ColumnWhereInput, orderBy: ColumnOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ColumnConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -988,7 +2065,9 @@ type Subscription {
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
   authAccessCode(where: AuthAccessCodeSubscriptionWhereInput): AuthAccessCodeSubscriptionPayload
   userSchema(where: UserSchemaSubscriptionWhereInput): UserSchemaSubscriptionPayload
+  paper(where: PaperSubscriptionWhereInput): PaperSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  column(where: ColumnSubscriptionWhereInput): ColumnSubscriptionPayload
 }
 
 type User implements Node {
@@ -1000,6 +2079,7 @@ type User implements Node {
   createdAt: DateTime!
   Files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File!]
   UserSchemas(where: UserSchemaWhereInput, orderBy: UserSchemaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserSchema!]
+  Papers(where: PaperWhereInput, orderBy: PaperOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Paper!]
 }
 
 """A connection to a list of items."""
@@ -1019,6 +2099,7 @@ input UserCreateInput {
   password: String!
   Files: FileCreateManyWithoutOwnerInput
   UserSchemas: UserSchemaCreateManyWithoutUserInput
+  Papers: PaperCreateManyWithoutOwnerInput
 }
 
 input UserCreateOneInput {
@@ -1028,6 +2109,11 @@ input UserCreateOneInput {
 
 input UserCreateOneWithoutFilesInput {
   create: UserCreateWithoutFilesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutPapersInput {
+  create: UserCreateWithoutPapersInput
   connect: UserWhereUniqueInput
 }
 
@@ -1042,6 +2128,16 @@ input UserCreateWithoutFilesInput {
   email: String!
   password: String!
   UserSchemas: UserSchemaCreateManyWithoutUserInput
+  Papers: PaperCreateManyWithoutOwnerInput
+}
+
+input UserCreateWithoutPapersInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  Files: FileCreateManyWithoutOwnerInput
+  UserSchemas: UserSchemaCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutUserSchemasInput {
@@ -1050,6 +2146,7 @@ input UserCreateWithoutUserSchemasInput {
   email: String!
   password: String!
   Files: FileCreateManyWithoutOwnerInput
+  Papers: PaperCreateManyWithoutOwnerInput
 }
 
 """An edge in a connection."""
@@ -1092,6 +2189,8 @@ type UserSchema implements Node {
   updatedAt: DateTime!
   createdAt: DateTime!
   rowCount: Int
+  created: Boolean!
+  columns(where: ColumnWhereInput, orderBy: ColumnOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Column!]
 }
 
 """A connection to a list of items."""
@@ -1108,7 +2207,9 @@ input UserSchemaCreateInput {
   id: ID
   name: String!
   rowCount: Int
+  created: Boolean
   user: UserCreateOneWithoutUserSchemasInput!
+  columns: ColumnCreateManyInput
 }
 
 input UserSchemaCreateManyWithoutUserInput {
@@ -1120,6 +2221,8 @@ input UserSchemaCreateWithoutUserInput {
   id: ID
   name: String!
   rowCount: Int
+  created: Boolean
+  columns: ColumnCreateManyInput
 }
 
 """An edge in a connection."""
@@ -1142,6 +2245,8 @@ enum UserSchemaOrderByInput {
   createdAt_DESC
   rowCount_ASC
   rowCount_DESC
+  created_ASC
+  created_DESC
 }
 
 type UserSchemaPreviousValues {
@@ -1150,6 +2255,7 @@ type UserSchemaPreviousValues {
   updatedAt: DateTime!
   createdAt: DateTime!
   rowCount: Int
+  created: Boolean!
 }
 
 input UserSchemaScalarWhereInput {
@@ -1307,6 +2413,10 @@ input UserSchemaScalarWhereInput {
 
   """All values greater than or equal the given value."""
   rowCount_gte: Int
+  created: Boolean
+
+  """All values that are not equal to given value."""
+  created_not: Boolean
 }
 
 type UserSchemaSubscriptionPayload {
@@ -1351,17 +2461,21 @@ input UserSchemaSubscriptionWhereInput {
 input UserSchemaUpdateInput {
   name: String
   rowCount: Int
+  created: Boolean
   user: UserUpdateOneRequiredWithoutUserSchemasInput
+  columns: ColumnUpdateManyInput
 }
 
 input UserSchemaUpdateManyDataInput {
   name: String
   rowCount: Int
+  created: Boolean
 }
 
 input UserSchemaUpdateManyMutationInput {
   name: String
   rowCount: Int
+  created: Boolean
 }
 
 input UserSchemaUpdateManyWithoutUserInput {
@@ -1384,6 +2498,8 @@ input UserSchemaUpdateManyWithWhereNestedInput {
 input UserSchemaUpdateWithoutUserDataInput {
   name: String
   rowCount: Int
+  created: Boolean
+  columns: ColumnUpdateManyInput
 }
 
 input UserSchemaUpdateWithWhereUniqueWithoutUserInput {
@@ -1552,7 +2668,14 @@ input UserSchemaWhereInput {
 
   """All values greater than or equal the given value."""
   rowCount_gte: Int
+  created: Boolean
+
+  """All values that are not equal to given value."""
+  created_not: Boolean
   user: UserWhereInput
+  columns_every: ColumnWhereInput
+  columns_some: ColumnWhereInput
+  columns_none: ColumnWhereInput
 }
 
 input UserSchemaWhereUniqueInput {
@@ -1604,6 +2727,7 @@ input UserUpdateDataInput {
   password: String
   Files: FileUpdateManyWithoutOwnerInput
   UserSchemas: UserSchemaUpdateManyWithoutUserInput
+  Papers: PaperUpdateManyWithoutOwnerInput
 }
 
 input UserUpdateInput {
@@ -1612,6 +2736,7 @@ input UserUpdateInput {
   password: String
   Files: FileUpdateManyWithoutOwnerInput
   UserSchemas: UserSchemaUpdateManyWithoutUserInput
+  Papers: PaperUpdateManyWithoutOwnerInput
 }
 
 input UserUpdateManyMutationInput {
@@ -1634,6 +2759,13 @@ input UserUpdateOneRequiredWithoutFilesInput {
   upsert: UserUpsertWithoutFilesInput
 }
 
+input UserUpdateOneRequiredWithoutPapersInput {
+  create: UserCreateWithoutPapersInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutPapersDataInput
+  upsert: UserUpsertWithoutPapersInput
+}
+
 input UserUpdateOneRequiredWithoutUserSchemasInput {
   create: UserCreateWithoutUserSchemasInput
   connect: UserWhereUniqueInput
@@ -1646,6 +2778,15 @@ input UserUpdateWithoutFilesDataInput {
   email: String
   password: String
   UserSchemas: UserSchemaUpdateManyWithoutUserInput
+  Papers: PaperUpdateManyWithoutOwnerInput
+}
+
+input UserUpdateWithoutPapersDataInput {
+  name: String
+  email: String
+  password: String
+  Files: FileUpdateManyWithoutOwnerInput
+  UserSchemas: UserSchemaUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutUserSchemasDataInput {
@@ -1653,6 +2794,7 @@ input UserUpdateWithoutUserSchemasDataInput {
   email: String
   password: String
   Files: FileUpdateManyWithoutOwnerInput
+  Papers: PaperUpdateManyWithoutOwnerInput
 }
 
 input UserUpsertNestedInput {
@@ -1663,6 +2805,11 @@ input UserUpsertNestedInput {
 input UserUpsertWithoutFilesInput {
   update: UserUpdateWithoutFilesDataInput!
   create: UserCreateWithoutFilesInput!
+}
+
+input UserUpsertWithoutPapersInput {
+  update: UserUpdateWithoutPapersDataInput!
+  create: UserCreateWithoutPapersInput!
 }
 
 input UserUpsertWithoutUserSchemasInput {
@@ -1889,6 +3036,9 @@ input UserWhereInput {
   UserSchemas_every: UserSchemaWhereInput
   UserSchemas_some: UserSchemaWhereInput
   UserSchemas_none: UserSchemaWhereInput
+  Papers_every: PaperWhereInput
+  Papers_some: PaperWhereInput
+  Papers_none: PaperWhereInput
 }
 
 input UserWhereUniqueInput {

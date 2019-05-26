@@ -1,11 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { createWriteStream } from "fs";
+import fs, { createWriteStream } from "fs";
 import mkdirp from "mkdirp";
 import shortid from "shortid";
 import nodemailer from "nodemailer";
 import smtpTransport from "nodemailer-smtp-transport";
 import { query } from "../utils/mysql";
+import { pythonShell } from "../utils/python";
 
 const uploadDir = `uploads`;
 
@@ -236,13 +237,28 @@ const Mutation = {
 		if (!header) {
 			throw new Error("Authentication Needed");
 		}
+		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
 		if (data.rows.length < 1) {
 			throw new Error("Rows Must be at least one");
 		}
-		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		let newSchema;
+
+		const queryString = data.rows.reduce(
+			(acc, { name, type, length }) =>
+				acc + `${name} ${type}(${length ? length : 30}),\n`,
+			""
+		);
 		try {
-			newSchema = await prisma.mutation.createUserSchema(
+			await query(
+				`CREATE TABLE ${id}_${data.name} (
+					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					${queryString}PRIMARY KEY (id)
+				);`
+			);
+		} catch (error) {
+			throw new Error("MYSQL ERROR\n" + error);
+		}
+		try {
+			return prisma.mutation.createUserSchema(
 				{
 					data: {
 						name: data.name,
@@ -250,6 +266,9 @@ const Mutation = {
 							connect: {
 								id
 							}
+						},
+						columns: {
+							create: data.rows
 						}
 					}
 				},
@@ -258,22 +277,6 @@ const Mutation = {
 		} catch (err) {
 			throw new Error("Prisma Error\n" + err);
 		}
-		let queryString = "";
-		data.rows.map(({ name, type, length }) => {
-			queryString += `${name} ${type}(${length ? length : 30}),\n`;
-		});
-		try {
-			await query(
-				`CREATE TABLE ${data.name} (
-					id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-					${queryString}PRIMARY KEY (id)
-				);`
-			);
-		} catch (error) {
-			throw new Error("MYSQL ERROR\n" + error);
-		}
-
-		return newSchema;
 	},
 	async UpdateUserSchemaInfo(
 		parent,
@@ -288,40 +291,43 @@ const Mutation = {
 		if (!header) {
 			throw new Error("Authentication Needed");
 		}
-		const { userId: id } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		const rightUserCheck = await prisma.query.userSchema(
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const getSchema = await prisma.query.userSchema(
 			{
 				where: { id: schemaId }
 			},
 			"{ id name user { id } }"
 		);
-		if (!rightUserCheck) {
+		if (!getSchema) {
 			throw new Error("No UserSchema found");
 		}
-		if (rightUserCheck.user.id !== id) {
+		if (getSchema.user.id !== userId) {
 			throw new Error("You can't get Schema Info");
 		}
-
 		try {
 			await Promise.all(
 				createRows
 					.map(id => {
-						return `INSERT INTO ${
-							rightUserCheck.name
+						return `INSERT INTO ${userId}_${
+							getSchema.name
 						} (id) VALUES (${id}); `;
 					})
 					.map(queryString => query(queryString))
 			);
+		} catch (err) {
+			throw new Error(`MySQL error:Input error\n${err}`);
+		}
+		try {
 			await Promise.all(
 				updateRows
 					.map(item => {
 						let Query = "";
 						const { id, ...queryObject } = item;
 						Object.entries(queryObject).map(([field, value]) => {
-							Query += `${field}=${value},`;
+							Query += `${field}='${value}',`;
 						});
-						return `UPDATE ${
-							rightUserCheck.name
+						return `UPDATE ${userId}_${
+							getSchema.name
 						} SET ${Query.substr(
 							0,
 							Query.length - 1
@@ -329,33 +335,119 @@ const Mutation = {
 					})
 					.map(queryString => query(queryString))
 			);
+		} catch (err) {
+			throw new Error(`MySQL error:Update error\n${err}`);
+		}
+		try {
 			await Promise.all(
 				deleteRows
 					.map(id => {
-						return `DELETE FROM ${
-							rightUserCheck.name
+						return `DELETE FROM ${userId}_${
+							getSchema.name
 						} WHERE id=${id}; `;
 					})
 					.map(queryString => query(queryString))
 			);
-			const [fieldQuery, rows, [{ id: nextId }]] = await Promise.all([
-				query(`show full columns from ${rightUserCheck.name};`),
-				query(`SELECT * FROM ${rightUserCheck.name};`),
+		} catch (err) {
+			throw new Error(`MySQL error:Delete error\n${err}`);
+		}
+		try {
+			const [fieldQuery, rows, [firstItem]] = await Promise.all([
+				query(`show full columns from ${userId}_${getSchema.name};`),
+				query(`SELECT * FROM ${userId}_${getSchema.name};`),
 				query(
-					`SELECT id FROM ${
-						rightUserCheck.name
+					`SELECT id FROM ${userId}_${
+						getSchema.name
 					} ORDER BY id DESC LIMIT 1;`
 				)
 			]);
 			const fields = fieldQuery.map(item => item.Field);
+			let nextId = 1;
+			if (firstItem) {
+				nextId = firstItem.id;
+			}
+			prisma.mutation.updateUserSchema({
+				data: {
+					rowCount: rows.length
+				},
+				where: { id: schemaId }
+			});
 			return {
 				fields,
 				rows,
 				nextId
 			};
 		} catch (err) {
-			throw new Error("MySQL Error");
+			throw new Error(`MySQL error:Select error\n${err}`);
 		}
+	},
+	async uploadForSearch(
+		parent,
+		{
+			data: { title, author, belong, publishedyear, file }
+		},
+		{ prisma, request, elastic },
+		info
+	) {
+		const header = request.headers.authorization;
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const token = header.replace("Bearer ", "");
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const { path } = await processUpload(file, userId);
+		const copyPath = path.substr(0, path.indexOf(".pdf")) + "_copyed.pdf";
+		fs.copyFileSync(path, copyPath);
+
+		const uploadPath =
+			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + copyPath;
+		const pythonResult = await pythonShell("elastic.py", [
+			uploadPath,
+			title,
+			author,
+			belong,
+			publishedyear
+		]);
+
+		if (pythonResult[0] === "NO") {
+			throw new Error("File size is so big");
+		}
+		const jsonPath = pythonResult[0];
+		let PaperId;
+		try {
+			const result = await prisma.mutation.createPaper(
+				{
+					data: {
+						title,
+						author,
+						belong,
+						publishedyear,
+						url: path,
+						owner: { connect: { id: userId } }
+					}
+				},
+				"{ id }"
+			);
+			PaperId = result.id;
+		} catch (err) {
+			throw new Error(`PrismaError:\n${err}`);
+		}
+
+		const bulkData = fs.readFileSync(jsonPath);
+		fs.unlinkSync(jsonPath);
+		const json = JSON.parse(bulkData.toString());
+		try {
+			await elastic.create({
+				index: "paper",
+				type: "metadata",
+				id: PaperId,
+				body: json
+			});
+		} catch (err) {
+			throw new Error(err);
+		}
+
+		return true;
 	}
 };
 

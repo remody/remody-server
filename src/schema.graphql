@@ -5,7 +5,9 @@ type Query {
 	userSchemas: [UserSchema!]!
 	pythonExample: Boolean
 	mysqlConnection: Boolean
+	elasticSearchConnection: Boolean
 	UserSchemaInfo(schemaId: String!): SchemaInfo!
+	papers(first: Int, after: String, queryString: String): [Paper!]!
 }
 
 type Mutation {
@@ -19,10 +21,19 @@ type Mutation {
 	changeUserPassword(data: changeUserPasswordInput!): User!
 	createTable(data: CreateTableInput!): UserSchema!
 	UpdateUserSchemaInfo(data: UpdateSchemaInput!): SchemaInfo!
+	uploadForSearch(data: uploadForSearchInput!): Boolean
 }
 
 scalar Upload
 scalar Object
+
+input uploadForSearchInput {
+	title: String!
+	author: String!
+	belong: String!
+	publishedyear: Int!
+	file: Upload!
+}
 
 type AuthPayload {
 	token: String!
@@ -108,7 +119,32 @@ type UserSchema {
 	id: ID!
 	user: User!
 	name: String!
-	rowCount: Int!
+	rowCount: Int
+	created: Boolean!
+	columns: [Column!]!
+}
+
+enum ColumnType {
+	VARCHAR
+	DATETIME
+	Int
+}
+
+type Column {
+	id: ID!
+	name: String!
+	type: ColumnType!
+	length: Int
+}
+
+type Paper {
+	id: ID!
+	owner: User!
+	title: String!
+	author: String!
+	belong: String!
+	publishedyear: Int!
+	url: String!
 }
 
 enum MutationType {

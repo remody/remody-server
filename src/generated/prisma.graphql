@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Sat May 25 2019 02:56:40 GMT+0900 (대한민국 표준시)
+# timestamp: Sun May 26 2019 23:54:48 GMT+0900 (대한민국 표준시)
 
 type AggregateAuthAccessCode {
   count: Int!
@@ -1393,6 +1393,7 @@ type Paper implements Node {
   author: String!
   belong: String!
   publishedyear: Int!
+  url: String!
 }
 
 """A connection to a list of items."""
@@ -1411,6 +1412,7 @@ input PaperCreateInput {
   author: String!
   belong: String!
   publishedyear: Int!
+  url: String!
   owner: UserCreateOneWithoutPapersInput!
 }
 
@@ -1425,6 +1427,7 @@ input PaperCreateWithoutOwnerInput {
   author: String!
   belong: String!
   publishedyear: Int!
+  url: String!
 }
 
 """An edge in a connection."""
@@ -1447,6 +1450,8 @@ enum PaperOrderByInput {
   belong_DESC
   publishedyear_ASC
   publishedyear_DESC
+  url_ASC
+  url_DESC
 }
 
 type PaperPreviousValues {
@@ -1455,6 +1460,7 @@ type PaperPreviousValues {
   author: String!
   belong: String!
   publishedyear: Int!
+  url: String!
 }
 
 input PaperScalarWhereInput {
@@ -1648,6 +1654,46 @@ input PaperScalarWhereInput {
 
   """All values greater than or equal the given value."""
   publishedyear_gte: Int
+  url: String
+
+  """All values that are not equal to given value."""
+  url_not: String
+
+  """All values that are contained in given list."""
+  url_in: [String!]
+
+  """All values that are not contained in given list."""
+  url_not_in: [String!]
+
+  """All values less than the given value."""
+  url_lt: String
+
+  """All values less than or equal the given value."""
+  url_lte: String
+
+  """All values greater than the given value."""
+  url_gt: String
+
+  """All values greater than or equal the given value."""
+  url_gte: String
+
+  """All values containing the given string."""
+  url_contains: String
+
+  """All values not containing the given string."""
+  url_not_contains: String
+
+  """All values starting with the given string."""
+  url_starts_with: String
+
+  """All values not starting with the given string."""
+  url_not_starts_with: String
+
+  """All values ending with the given string."""
+  url_ends_with: String
+
+  """All values not ending with the given string."""
+  url_not_ends_with: String
 }
 
 type PaperSubscriptionPayload {
@@ -1694,6 +1740,7 @@ input PaperUpdateInput {
   author: String
   belong: String
   publishedyear: Int
+  url: String
   owner: UserUpdateOneRequiredWithoutPapersInput
 }
 
@@ -1702,6 +1749,7 @@ input PaperUpdateManyDataInput {
   author: String
   belong: String
   publishedyear: Int
+  url: String
 }
 
 input PaperUpdateManyMutationInput {
@@ -1709,6 +1757,7 @@ input PaperUpdateManyMutationInput {
   author: String
   belong: String
   publishedyear: Int
+  url: String
 }
 
 input PaperUpdateManyWithoutOwnerInput {
@@ -1733,6 +1782,7 @@ input PaperUpdateWithoutOwnerDataInput {
   author: String
   belong: String
   publishedyear: Int
+  url: String
 }
 
 input PaperUpdateWithWhereUniqueWithoutOwnerInput {
@@ -1937,6 +1987,46 @@ input PaperWhereInput {
 
   """All values greater than or equal the given value."""
   publishedyear_gte: Int
+  url: String
+
+  """All values that are not equal to given value."""
+  url_not: String
+
+  """All values that are contained in given list."""
+  url_in: [String!]
+
+  """All values that are not contained in given list."""
+  url_not_in: [String!]
+
+  """All values less than the given value."""
+  url_lt: String
+
+  """All values less than or equal the given value."""
+  url_lte: String
+
+  """All values greater than the given value."""
+  url_gt: String
+
+  """All values greater than or equal the given value."""
+  url_gte: String
+
+  """All values containing the given string."""
+  url_contains: String
+
+  """All values not containing the given string."""
+  url_not_contains: String
+
+  """All values starting with the given string."""
+  url_starts_with: String
+
+  """All values not starting with the given string."""
+  url_not_starts_with: String
+
+  """All values ending with the given string."""
+  url_ends_with: String
+
+  """All values not ending with the given string."""
+  url_not_ends_with: String
   owner: UserWhereInput
 }
 

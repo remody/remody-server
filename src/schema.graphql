@@ -144,6 +144,7 @@ type Paper {
 	author: String!
 	belong: String!
 	publishedyear: Int!
+	url: String!
 }
 
 enum MutationType {

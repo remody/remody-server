@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { PythonShell } from "python-shell";
 import { query } from "../utils/mysql";
+import { pythonShell } from "../utils/python";
 const Query = {
 	users(parent, args, { prisma }, info) {
 		const onArgs = {};
@@ -96,24 +97,9 @@ const Query = {
 
 		return true;
 	},
-	pythonExample(parent, args, { prisma }, info) {
-		const options = {
-			mode: "text",
-
-			pythonPath: "",
-
-			pythonOptions: ["-u"],
-
-			scriptPath: `${__dirname}/../python`,
-
-			args: ["value1", "value2", "value3"]
-		};
-
-		PythonShell.run("example.py", options, function(err, results) {
-			if (err) throw err;
-
-			console.log("results: %j", results);
-		});
+	async pythonExample(parent, args, ctx, info) {
+		const result = await pythonShell("example.py");
+		console.log(result);
 
 		return true;
 	},

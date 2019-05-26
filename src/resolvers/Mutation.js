@@ -402,7 +402,7 @@ const Mutation = {
 		);
 
 		const uploadPath =
-			__dirname.substr(0, __dirname.indexOf("/src")) + path;
+			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + path;
 		await pythonShell("elastic.py", [
 			uploadPath,
 			title,

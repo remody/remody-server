@@ -1,11 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { createWriteStream } from "fs";
+import fs, { createWriteStream } from "fs";
 import mkdirp from "mkdirp";
 import shortid from "shortid";
 import nodemailer from "nodemailer";
 import smtpTransport from "nodemailer-smtp-transport";
 import { query } from "../utils/mysql";
+import { pythonShell } from "../utils/python";
 
 const uploadDir = `uploads`;
 
@@ -379,6 +380,74 @@ const Mutation = {
 		} catch (err) {
 			throw new Error(`MySQL error:Select error\n${err}`);
 		}
+	},
+	async uploadForSearch(
+		parent,
+		{
+			data: { title, author, belong, publishedyear, file }
+		},
+		{ prisma, request, elastic },
+		info
+	) {
+		const header = request.headers.authorization;
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const token = header.replace("Bearer ", "");
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const { path } = await processUpload(file, userId);
+		const copyPath = path.substr(0, path.indexOf(".pdf")) + "_copyed.pdf";
+		fs.copyFileSync(path, copyPath);
+
+		const uploadPath =
+			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + copyPath;
+		const pythonResult = await pythonShell("elastic.py", [
+			uploadPath,
+			title,
+			author,
+			belong,
+			publishedyear
+		]);
+
+		if (pythonResult[0] === "NO") {
+			throw new Error("File size is so big");
+		}
+		const jsonPath = pythonResult[0];
+		let PaperId;
+		try {
+			const result = await prisma.mutation.createPaper(
+				{
+					data: {
+						title,
+						author,
+						belong,
+						publishedyear,
+						url: path,
+						owner: { connect: { id: userId } }
+					}
+				},
+				"{ id }"
+			);
+			PaperId = result.id;
+		} catch (err) {
+			throw new Error(`PrismaError:\n${err}`);
+		}
+
+		const bulkData = fs.readFileSync(jsonPath);
+		fs.unlinkSync(jsonPath);
+		const json = JSON.parse(bulkData.toString());
+		try {
+			await elastic.create({
+				index: "paper",
+				type: "metadata",
+				id: PaperId,
+				body: json
+			});
+		} catch (err) {
+			throw new Error(err);
+		}
+
+		return true;
 	}
 };
 

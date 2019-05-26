@@ -433,13 +433,12 @@ const Mutation = {
 		const bulkData = fs.readFileSync(jsonPath);
 		const json = JSON.parse(bulkData.toString());
 		try {
-			const elasticResult = await elastic.bulk({
+			await elastic.create({
 				index: "paper",
 				type: "metadata",
 				id: PaperId,
 				body: json
 			});
-			console.log(elasticResult);
 		} catch (err) {
 			throw new Error(err);
 		}

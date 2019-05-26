@@ -417,7 +417,8 @@ const Mutation = {
 
 		const jsonPath = pythonResult[0];
 		const bulkData = fs.readFileSync(jsonPath);
-		console.log(bulkData);
+		const json = JSON.parse(bulkData.toString());
+		console.log(json);
 		//파일을 파이썬으로 해석
 		//프리즈마에 새파일 생성
 		//엘라스틱 서치에 저장

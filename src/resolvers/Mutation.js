@@ -119,31 +119,37 @@ const Mutation = {
 
 		return updatedUser;
 	},
-	async singleUpload(parent, { file }, { prisma, request }, info) {
+	async singleUpload(parent, { file, schemaId }, { prisma, request }, info) {
 		const header = request.headers.authorization;
 		if (!header) {
 			throw new Error("Authentication Needed");
 		}
 		const token = header.replace("Bearer ", "");
-
 		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		const { filename, mimetype, encoding, path } = await processUpload(
-			file,
-			userId
+
+		const { path } = await processUpload(file, userId);
+
+		let columns = await prisma.mutation.updateUserSchema(
+			{ data: { create: true }, where: { id: schemaId } },
+			"{ columns { name } }"
 		);
-		return prisma.mutation.createFile({
-			data: {
-				filename,
-				mimetype,
-				encoding,
-				path,
-				owner: {
-					connect: {
-						id: userId
-					}
-				}
-			}
+
+		const uploadPath =
+			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + path;
+		const preprocResult = await pythonShell("preproc.py", [uploadPath]);
+		const compareResult = await pythonShell("remody_compare.py", [
+			preprocResult[0],
+			columns
+		]);
+		console.log(compareResult);
+		//MYSQL에 집어넣기
+
+		//작업 완료 말하기
+		await prisma.mutation.updateUserSchema({
+			data: { create: false },
+			where: { id: schemaId }
 		});
+		return true;
 	},
 	async multipleUpload(parent, { files }, { prisma }, info) {
 		Promise.all(files.map(processUpload));

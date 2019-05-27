@@ -15,7 +15,7 @@ type Mutation {
 	login(data: LoginUserInput!): AuthPayload!
 	deleteUser(id: ID!): User!
 	updateUser(id: ID!, data: UpdateUserInput!): User!
-	singleUpload(file: Upload!): File!
+	singleUpload(file: Upload!, schemaId: ID): Boolean
 	multipleUpload(files: [Upload!]!): [File!]!
 	createAuthAccessCode(email: String!): Boolean!
 	changeUserPassword(data: changeUserPasswordInput!): User!

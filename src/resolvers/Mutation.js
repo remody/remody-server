@@ -120,6 +120,7 @@ const Mutation = {
 		return updatedUser;
 	},
 	async singleUpload(parent, { file, schemaId }, { prisma, request }, info) {
+		console.log("singleUpload");
 		const header = request.headers.authorization;
 		if (!header) {
 			throw new Error("Authentication Needed");
@@ -130,16 +131,19 @@ const Mutation = {
 		const { path } = await processUpload(file, userId);
 
 		let columns = await prisma.mutation.updateUserSchema(
-			{ data: { create: true }, where: { id: schemaId } },
+			{ data: { created: true }, where: { id: schemaId } },
 			"{ columns { name } }"
 		);
 
+		const keywords = columns.columns.map(item => item.name);
+		console.log(keywords);
 		const uploadPath =
 			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + path;
 		const preprocResult = await pythonShell("preproc.py", [uploadPath]);
+		console.log(preprocResult);
 		const compareResult = await pythonShell("remody_compare.py", [
 			preprocResult[0],
-			columns
+			keywords
 		]);
 		console.log(compareResult);
 		//MYSQL에 집어넣기

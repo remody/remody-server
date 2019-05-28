@@ -132,7 +132,7 @@ const Mutation = {
 
 		let columns = await prisma.mutation.updateUserSchema(
 			{ data: { created: true }, where: { id: schemaId } },
-			"{ name columns { name } }"
+			"{ name rowcount columns { name } }"
 		);
 
 		const keywords = columns.columns.map(item => item.name);
@@ -176,7 +176,7 @@ const Mutation = {
 		);
 
 		await prisma.mutation.updateUserSchema({
-			data: { created: false },
+			data: { created: false, rowcount: columns.columns + 1 },
 			where: { id: schemaId }
 		});
 		return true;

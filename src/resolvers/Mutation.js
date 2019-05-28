@@ -132,25 +132,51 @@ const Mutation = {
 
 		let columns = await prisma.mutation.updateUserSchema(
 			{ data: { created: true }, where: { id: schemaId } },
-			"{ columns { name } }"
+			"{ name columns { name } }"
 		);
 
 		const keywords = columns.columns.map(item => item.name);
 		console.log(keywords);
-		const uploadPath =
-			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + path;
+		const uploadPath = "/home/ubuntu/app/remody-server" + "/" + path;
 		const preprocResult = await pythonShell("preproc.py", [uploadPath]);
 		console.log(preprocResult);
-		const compareResult = await pythonShell("remody_compare.py", [
+		const [compareResult] = await pythonShell("remody_compare.py", [
 			preprocResult[0],
-			keywords
+			...keywords
 		]);
 		console.log(compareResult);
-		//MYSQL에 집어넣기
 
-		//작업 완료 말하기
+		const bulkData = fs.readFileSync(compareResult);
+		fs.unlinkSync(compareResult);
+		const json = JSON.parse(bulkData.toString());
+		console.log(json);
+
+		let attrs = [];
+		let values = [];
+		Object.entries(json).map(([attr, value]) => {
+			attrs = [...attrs, attr];
+			values = [...values, value];
+		});
+		const attstring = attrs.reduce((acc, string, index) => {
+			if (index === attrs.length - 1) {
+				return `${acc}${string}`;
+			}
+			return `${acc}${string},`;
+		}, "");
+		const valuestring = values.reduce((acc, string, index) => {
+			if (index === values.length - 1) {
+				return `${acc}"${string}"`;
+			}
+			return `${acc}"${string}",`;
+		}, "");
+		await query(
+			`INSERT INTO ${userId}_${
+				columns.name
+			} (${attstring}) VALUES (${valuestring}); `
+		);
+
 		await prisma.mutation.updateUserSchema({
-			data: { create: false },
+			data: { created: false },
 			where: { id: schemaId }
 		});
 		return true;

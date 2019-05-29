@@ -484,6 +484,34 @@ const Mutation = {
 		}
 
 		return true;
+	},
+	async deleteUserSchema(
+		parent,
+		{ id: schemaId },
+		{ prisma, request },
+		info
+	) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const getSchema = await prisma.query.userSchema(
+			{
+				where: { id: schemaId }
+			},
+			"{ id name user { id } }"
+		);
+		if (!getSchema) {
+			throw new Error("No UserSchema found");
+		}
+		if (getSchema.user.id !== userId) {
+			throw new Error("You can't get Schema Info");
+		}
+		await query(`DROP TABLE ${userId}_${getSchema.name};`);
+		await prisma.mutation.deleteUserSchema({ where: { id: schemaId } });
+		return true;
 	}
 };
 

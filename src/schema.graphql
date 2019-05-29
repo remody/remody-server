@@ -15,11 +15,12 @@ type Mutation {
 	login(data: LoginUserInput!): AuthPayload!
 	deleteUser(id: ID!): User!
 	updateUser(id: ID!, data: UpdateUserInput!): User!
-	singleUpload(file: Upload!, schemaId: ID): Boolean
+	singleUpload(file: Upload!, schemaId: ID!): Boolean
 	multipleUpload(files: [Upload!]!): [File!]!
 	createAuthAccessCode(email: String!): Boolean!
 	changeUserPassword(data: changeUserPasswordInput!): User!
 	createTable(data: CreateTableInput!): UserSchema!
+	deleteUserSchema(id: ID!): Boolean
 	UpdateUserSchemaInfo(data: UpdateSchemaInput!): SchemaInfo!
 	uploadForSearch(data: uploadForSearchInput!): Boolean
 }

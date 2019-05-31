@@ -264,34 +264,49 @@ var Mutation = {
 	}(),
 	deleteUser: function () {
 		var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(parent, args, _ref10, info) {
-			var prisma = _ref10.prisma;
-			var idExist, deletedUser;
+			var prisma = _ref10.prisma,
+			    request = _ref10.request;
+
+			var header, token, _jwt$decode, userId, idExist, deletedUser;
+
 			return _regenerator2.default.wrap(function _callee5$(_context5) {
 				while (1) {
 					switch (_context5.prev = _context5.next) {
 						case 0:
-							_context5.next = 2;
-							return prisma.exists.User({ id: args.id });
+							header = request.headers.authorization;
 
-						case 2:
+							if (header) {
+								_context5.next = 3;
+								break;
+							}
+
+							throw new Error("Authentication Needed");
+
+						case 3:
+							token = header.replace("Bearer ", "");
+							_jwt$decode = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode.userId;
+							_context5.next = 7;
+							return prisma.exists.User({ id: userId });
+
+						case 7:
 							idExist = _context5.sent;
 
 							if (idExist) {
-								_context5.next = 5;
+								_context5.next = 10;
 								break;
 							}
 
 							throw new Error("User doesn't exists");
 
-						case 5:
-							_context5.next = 7;
+						case 10:
+							_context5.next = 12;
 							return prisma.mutation.deleteUser({ where: { id: args.id } }, info);
 
-						case 7:
+						case 12:
 							deletedUser = _context5.sent;
 							return _context5.abrupt("return", deletedUser);
 
-						case 9:
+						case 14:
 						case "end":
 							return _context5.stop();
 					}
@@ -307,37 +322,52 @@ var Mutation = {
 	}(),
 	updateUser: function () {
 		var _ref13 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(parent, args, _ref12, info) {
-			var prisma = _ref12.prisma;
-			var idExist, updatedUser;
+			var prisma = _ref12.prisma,
+			    request = _ref12.request;
+
+			var header, token, _jwt$decode2, userId, idExist, updatedUser;
+
 			return _regenerator2.default.wrap(function _callee6$(_context6) {
 				while (1) {
 					switch (_context6.prev = _context6.next) {
 						case 0:
-							_context6.next = 2;
-							return prisma.exists.User({ id: args.id });
+							header = request.headers.authorization;
 
-						case 2:
+							if (header) {
+								_context6.next = 3;
+								break;
+							}
+
+							throw new Error("Authentication Needed");
+
+						case 3:
+							token = header.replace("Bearer ", "");
+							_jwt$decode2 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode2.userId;
+							_context6.next = 7;
+							return prisma.exists.User({ id: userId });
+
+						case 7:
 							idExist = _context6.sent;
 
 							if (idExist) {
-								_context6.next = 5;
+								_context6.next = 10;
 								break;
 							}
 
 							throw new Error("User doesn't exists");
 
-						case 5:
-							_context6.next = 7;
+						case 10:
+							_context6.next = 12;
 							return prisma.mutation.updateUser({
-								where: { id: args.id },
+								where: { id: userId },
 								data: args.data
 							}, info);
 
-						case 7:
+						case 12:
 							updatedUser = _context6.sent;
 							return _context6.abrupt("return", updatedUser);
 
-						case 9:
+						case 14:
 						case "end":
 							return _context6.stop();
 					}
@@ -358,7 +388,7 @@ var Mutation = {
 			var prisma = _ref15.prisma,
 			    request = _ref15.request;
 
-			var header, token, _jwt$decode, userId, _ref17, path, columns, keywords, uploadPath, preprocResult, _ref18, _ref19, compareResult, bulkData, json, attrs, values, attstring, valuestring;
+			var header, token, _jwt$decode3, userId, _ref17, path, columns, keywords, uploadPath, preprocResult, _ref18, _ref19, compareResult, bulkData, json, attrs, values, attstring, valuestring;
 
 			return _regenerator2.default.wrap(function _callee7$(_context7) {
 				while (1) {
@@ -376,7 +406,7 @@ var Mutation = {
 
 						case 4:
 							token = header.replace("Bearer ", "");
-							_jwt$decode = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode.userId;
+							_jwt$decode3 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode3.userId;
 							_context7.next = 8;
 							return processUpload(file, userId);
 
@@ -411,6 +441,14 @@ var Mutation = {
 
 							console.log(compareResult);
 
+							if (!(compareResult === "NO")) {
+								_context7.next = 28;
+								break;
+							}
+
+							throw new Error("일치하는 키워드가 없습니다.");
+
+						case 28:
 							bulkData = _fs2.default.readFileSync(compareResult);
 
 							_fs2.default.unlinkSync(compareResult);
@@ -441,20 +479,20 @@ var Mutation = {
 								}
 								return acc + "\"" + string + "\",";
 							}, "");
-							_context7.next = 37;
+							_context7.next = 39;
 							return (0, _mysql.query)("INSERT INTO " + userId + "_" + columns.name + " (" + attstring + ") VALUES (" + valuestring + "); ");
 
-						case 37:
-							_context7.next = 39;
+						case 39:
+							_context7.next = 41;
 							return prisma.mutation.updateUserSchema({
 								data: { created: false, rowCount: columns.rowCount + 1 },
 								where: { id: schemaId }
 							});
 
-						case 39:
+						case 41:
 							return _context7.abrupt("return", true);
 
-						case 40:
+						case 42:
 						case "end":
 							return _context7.stop();
 					}
@@ -639,7 +677,7 @@ var Mutation = {
 			var request = _ref32.request,
 			    prisma = _ref32.prisma;
 
-			var header, token, _jwt$decode2, id, queryString;
+			var header, token, _jwt$decode4, id, queryString;
 
 			return _regenerator2.default.wrap(function _callee11$(_context11) {
 				while (1) {
@@ -656,7 +694,7 @@ var Mutation = {
 							throw new Error("Authentication Needed");
 
 						case 4:
-							_jwt$decode2 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), id = _jwt$decode2.userId;
+							_jwt$decode4 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), id = _jwt$decode4.userId;
 
 							if (!(data.rows.length < 1)) {
 								_context11.next = 7;
@@ -730,7 +768,7 @@ var Mutation = {
 			var request = _ref36.request,
 			    prisma = _ref36.prisma;
 
-			var header, token, _jwt$decode3, userId, getSchema, _ref40, _ref41, fieldQuery, rows, _ref41$, firstItem, fields, nextId;
+			var header, token, _jwt$decode5, userId, getSchema, _ref40, _ref41, fieldQuery, rows, _ref41$, firstItem, fields, nextId;
 
 			return _regenerator2.default.wrap(function _callee12$(_context12) {
 				while (1) {
@@ -747,7 +785,7 @@ var Mutation = {
 							throw new Error("Authentication Needed");
 
 						case 4:
-							_jwt$decode3 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode3.userId;
+							_jwt$decode5 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode5.userId;
 							_context12.next = 7;
 							return prisma.query.userSchema({
 								where: { id: schemaId }
@@ -899,7 +937,7 @@ var Mutation = {
 			    request = _ref43.request,
 			    elastic = _ref43.elastic;
 
-			var header, token, _jwt$decode4, userId, _ref45, path, copyPath, uploadPath, pythonResult, jsonPath, PaperId, result, bulkData, json;
+			var header, token, _jwt$decode6, userId, _ref45, path, copyPath, uploadPath, pythonResult, jsonPath, PaperId, result, bulkData, json;
 
 			return _regenerator2.default.wrap(function _callee13$(_context13) {
 				while (1) {
@@ -916,7 +954,7 @@ var Mutation = {
 
 						case 3:
 							token = header.replace("Bearer ", "");
-							_jwt$decode4 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode4.userId;
+							_jwt$decode6 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode6.userId;
 							_context13.next = 7;
 							return processUpload(file, userId);
 
@@ -927,7 +965,7 @@ var Mutation = {
 
 							_fs2.default.copyFileSync(path, copyPath);
 
-							uploadPath = __dirname.substr(0, __dirname.indexOf("/src")) + "/" + copyPath;
+							uploadPath = "/home/ubuntu/app/remody-server" + "/" + copyPath;
 							_context13.next = 14;
 							return (0, _python.pythonShell)("elastic.py", [uploadPath, title, author, belong, publishedyear]);
 
@@ -1015,7 +1053,7 @@ var Mutation = {
 			var prisma = _ref47.prisma,
 			    request = _ref47.request;
 
-			var header, token, _jwt$decode5, userId, getSchema;
+			var header, token, _jwt$decode7, userId, getSchema;
 
 			return _regenerator2.default.wrap(function _callee14$(_context14) {
 				while (1) {
@@ -1032,7 +1070,7 @@ var Mutation = {
 							throw new Error("Authentication Needed");
 
 						case 4:
-							_jwt$decode5 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode5.userId;
+							_jwt$decode7 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), userId = _jwt$decode7.userId;
 							_context14.next = 7;
 							return prisma.query.userSchema({
 								where: { id: schemaId }

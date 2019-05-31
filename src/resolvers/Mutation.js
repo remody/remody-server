@@ -146,6 +146,10 @@ const Mutation = {
 		]);
 		console.log(compareResult);
 
+		if (compareResult === "NO") {
+			throw new Error("일치하는 키워드가 없습니다.");
+		}
+
 		const bulkData = fs.readFileSync(compareResult);
 		fs.unlinkSync(compareResult);
 		const json = JSON.parse(bulkData.toString());

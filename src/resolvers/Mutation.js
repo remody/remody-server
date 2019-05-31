@@ -435,8 +435,7 @@ const Mutation = {
 		const copyPath = path.substr(0, path.indexOf(".pdf")) + "_copyed.pdf";
 		fs.copyFileSync(path, copyPath);
 
-		const uploadPath =
-			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + copyPath;
+		const uploadPath = "/home/ubuntu/app/remody-server" + "/" + copyPath;
 		const pythonResult = await pythonShell("elastic.py", [
 			uploadPath,
 			title,

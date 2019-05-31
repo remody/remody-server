@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kyungminlee-5dfb92/remody-server/dev
-# timestamp: Sun May 26 2019 23:54:48 GMT+0900 (대한민국 표준시)
+# timestamp: Fri May 31 2019 18:07:11 GMT+0900 (대한민국 표준시)
 
 type AggregateAuthAccessCode {
   count: Int!
@@ -2075,6 +2075,7 @@ type User implements Node {
   name: String!
   email: String!
   password: String!
+  belong: String
   updatedAt: DateTime!
   createdAt: DateTime!
   Files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File!]
@@ -2097,6 +2098,7 @@ input UserCreateInput {
   name: String!
   email: String!
   password: String!
+  belong: String
   Files: FileCreateManyWithoutOwnerInput
   UserSchemas: UserSchemaCreateManyWithoutUserInput
   Papers: PaperCreateManyWithoutOwnerInput
@@ -2127,6 +2129,7 @@ input UserCreateWithoutFilesInput {
   name: String!
   email: String!
   password: String!
+  belong: String
   UserSchemas: UserSchemaCreateManyWithoutUserInput
   Papers: PaperCreateManyWithoutOwnerInput
 }
@@ -2136,6 +2139,7 @@ input UserCreateWithoutPapersInput {
   name: String!
   email: String!
   password: String!
+  belong: String
   Files: FileCreateManyWithoutOwnerInput
   UserSchemas: UserSchemaCreateManyWithoutUserInput
 }
@@ -2145,6 +2149,7 @@ input UserCreateWithoutUserSchemasInput {
   name: String!
   email: String!
   password: String!
+  belong: String
   Files: FileCreateManyWithoutOwnerInput
   Papers: PaperCreateManyWithoutOwnerInput
 }
@@ -2167,6 +2172,8 @@ enum UserOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  belong_ASC
+  belong_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -2178,6 +2185,7 @@ type UserPreviousValues {
   name: String!
   email: String!
   password: String!
+  belong: String
   updatedAt: DateTime!
   createdAt: DateTime!
 }
@@ -2725,6 +2733,7 @@ input UserUpdateDataInput {
   name: String
   email: String
   password: String
+  belong: String
   Files: FileUpdateManyWithoutOwnerInput
   UserSchemas: UserSchemaUpdateManyWithoutUserInput
   Papers: PaperUpdateManyWithoutOwnerInput
@@ -2734,6 +2743,7 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+  belong: String
   Files: FileUpdateManyWithoutOwnerInput
   UserSchemas: UserSchemaUpdateManyWithoutUserInput
   Papers: PaperUpdateManyWithoutOwnerInput
@@ -2743,6 +2753,7 @@ input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+  belong: String
 }
 
 input UserUpdateOneRequiredInput {
@@ -2777,6 +2788,7 @@ input UserUpdateWithoutFilesDataInput {
   name: String
   email: String
   password: String
+  belong: String
   UserSchemas: UserSchemaUpdateManyWithoutUserInput
   Papers: PaperUpdateManyWithoutOwnerInput
 }
@@ -2785,6 +2797,7 @@ input UserUpdateWithoutPapersDataInput {
   name: String
   email: String
   password: String
+  belong: String
   Files: FileUpdateManyWithoutOwnerInput
   UserSchemas: UserSchemaUpdateManyWithoutUserInput
 }
@@ -2793,6 +2806,7 @@ input UserUpdateWithoutUserSchemasDataInput {
   name: String
   email: String
   password: String
+  belong: String
   Files: FileUpdateManyWithoutOwnerInput
   Papers: PaperUpdateManyWithoutOwnerInput
 }
@@ -2986,6 +3000,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
+  belong: String
+
+  """All values that are not equal to given value."""
+  belong_not: String
+
+  """All values that are contained in given list."""
+  belong_in: [String!]
+
+  """All values that are not contained in given list."""
+  belong_not_in: [String!]
+
+  """All values less than the given value."""
+  belong_lt: String
+
+  """All values less than or equal the given value."""
+  belong_lte: String
+
+  """All values greater than the given value."""
+  belong_gt: String
+
+  """All values greater than or equal the given value."""
+  belong_gte: String
+
+  """All values containing the given string."""
+  belong_contains: String
+
+  """All values not containing the given string."""
+  belong_not_contains: String
+
+  """All values starting with the given string."""
+  belong_starts_with: String
+
+  """All values not starting with the given string."""
+  belong_not_starts_with: String
+
+  """All values ending with the given string."""
+  belong_ends_with: String
+
+  """All values not ending with the given string."""
+  belong_not_ends_with: String
   updatedAt: DateTime
 
   """All values that are not equal to given value."""

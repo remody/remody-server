@@ -13,8 +13,8 @@ type Query {
 type Mutation {
 	createUser(data: CreateUserInput!): AuthPayload!
 	login(data: LoginUserInput!): AuthPayload!
-	deleteUser(id: ID!): User!
-	updateUser(id: ID!, data: UpdateUserInput!): User!
+	deleteUser: Boolean
+	updateUser(data: UpdateUserInput!): User!
 	singleUpload(file: Upload!, schemaId: ID!): Boolean
 	multipleUpload(files: [Upload!]!): [File!]!
 	createAuthAccessCode(email: String!): Boolean!
@@ -53,8 +53,9 @@ input LoginUserInput {
 }
 
 input UpdateUserInput {
-	name: String
-	email: String
+	name: String!
+	email: String!
+	belong: String
 }
 
 input changeUserPasswordInput {
@@ -98,6 +99,7 @@ type User {
 	name: String!
 	email: String!
 	password: String!
+	belong: String
 	Files: [File!]!
 	UserSchemas: [UserSchema!]!
 }

@@ -89,21 +89,30 @@ const Mutation = {
 			)
 		};
 	},
-	async deleteUser(parent, args, { prisma }, info) {
-		const idExist = await prisma.exists.User({ id: args.id });
+	async deleteUser(parent, args, { prisma, request }, info) {
+		const header = request.headers.authorization;
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const token = header.replace("Bearer ", "");
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const idExist = await prisma.exists.User({ id: userId });
 		if (!idExist) {
 			throw new Error("User doesn't exists");
 		}
 
-		const deletedUser = await prisma.mutation.deleteUser(
-			{ where: { id: args.id } },
-			info
-		);
+		await prisma.mutation.deleteUser({ where: { id: userId } });
 
-		return deletedUser;
+		return true;
 	},
-	async updateUser(parent, args, { prisma }, info) {
-		const idExist = await prisma.exists.User({ id: args.id });
+	async updateUser(parent, args, { prisma, request }, info) {
+		const header = request.headers.authorization;
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const token = header.replace("Bearer ", "");
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const idExist = await prisma.exists.User({ id: userId });
 
 		if (!idExist) {
 			throw new Error("User doesn't exists");
@@ -111,7 +120,7 @@ const Mutation = {
 
 		const updatedUser = await prisma.mutation.updateUser(
 			{
-				where: { id: args.id },
+				where: { id: userId },
 				data: args.data
 			},
 			info

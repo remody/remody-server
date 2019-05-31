@@ -3,6 +3,7 @@ type User {
 	name: String!
 	email: String! @unique
 	password: String!
+	belong: String
 	updatedAt: DateTime! @updatedAt
 	createdAt: DateTime! @createdAt
 	Files: [File!]! @relation(name: "FileToUser", onDelete: CASCADE)

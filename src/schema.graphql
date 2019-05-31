@@ -21,6 +21,7 @@ type Mutation {
 	changeUserPassword(data: changeUserPasswordInput!): User!
 	createTable(data: CreateTableInput!): UserSchema!
 	deleteUserSchema(id: ID!): Boolean
+	deletePaper(id: ID!): Boolean
 	UpdateUserSchemaInfo(data: UpdateSchemaInput!): SchemaInfo!
 	uploadForSearch(data: uploadForSearchInput!): Boolean
 }
@@ -102,6 +103,7 @@ type User {
 	belong: String
 	Files: [File!]!
 	UserSchemas: [UserSchema!]!
+	Papers: [Paper!]!
 }
 
 type File {

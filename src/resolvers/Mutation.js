@@ -524,6 +524,52 @@ const Mutation = {
 		await query(`DROP TABLE ${userId}_${getSchema.name};`);
 		await prisma.mutation.deleteUserSchema({ where: { id: schemaId } });
 		return true;
+	},
+	async deletePaper(
+		parent,
+		{ id: paperId },
+		{ prisma, request, elastic },
+		info
+	) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const paper = await prisma.query.paper(
+			{
+				where: { id: paperId }
+			},
+			"{ id url owner { id } }"
+		);
+		if (!paper) {
+			throw new Error("No Paper found");
+		}
+		if (paper.owner.id !== userId) {
+			throw new Error("You can't get Paper Info");
+		}
+		try {
+			fs.unlinkSync("/home/ubuntu/app/remody-server" + "/" + paper.url);
+		} catch (err) {
+			throw new Error(`file Error:\n${err}`);
+		}
+		try {
+			await elastic.delete({
+				index: "paper",
+				type: "metadata",
+				id: paper.id
+			});
+		} catch (err) {
+			throw new Error(`elastic Error:\n${err}`);
+		}
+		try {
+			await prisma.mutation.deletePaper({ where: { id: paperId } });
+		} catch (err) {
+			throw new Error(`Prisma Error:\n${err}`);
+		}
+
+		return true;
 	}
 };
 

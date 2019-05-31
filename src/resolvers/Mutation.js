@@ -89,21 +89,30 @@ const Mutation = {
 			)
 		};
 	},
-	async deleteUser(parent, args, { prisma }, info) {
-		const idExist = await prisma.exists.User({ id: args.id });
+	async deleteUser(parent, args, { prisma, request }, info) {
+		const header = request.headers.authorization;
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const token = header.replace("Bearer ", "");
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const idExist = await prisma.exists.User({ id: userId });
 		if (!idExist) {
 			throw new Error("User doesn't exists");
 		}
 
-		const deletedUser = await prisma.mutation.deleteUser(
-			{ where: { id: args.id } },
-			info
-		);
+		await prisma.mutation.deleteUser({ where: { id: userId } });
 
-		return deletedUser;
+		return true;
 	},
-	async updateUser(parent, args, { prisma }, info) {
-		const idExist = await prisma.exists.User({ id: args.id });
+	async updateUser(parent, args, { prisma, request }, info) {
+		const header = request.headers.authorization;
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const token = header.replace("Bearer ", "");
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const idExist = await prisma.exists.User({ id: userId });
 
 		if (!idExist) {
 			throw new Error("User doesn't exists");
@@ -111,7 +120,7 @@ const Mutation = {
 
 		const updatedUser = await prisma.mutation.updateUser(
 			{
-				where: { id: args.id },
+				where: { id: userId },
 				data: args.data
 			},
 			info
@@ -119,31 +128,71 @@ const Mutation = {
 
 		return updatedUser;
 	},
-	async singleUpload(parent, { file }, { prisma, request }, info) {
+	async singleUpload(parent, { file, schemaId }, { prisma, request }, info) {
+		console.log("singleUpload");
 		const header = request.headers.authorization;
 		if (!header) {
 			throw new Error("Authentication Needed");
 		}
 		const token = header.replace("Bearer ", "");
-
 		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
-		const { filename, mimetype, encoding, path } = await processUpload(
-			file,
-			userId
+
+		const { path } = await processUpload(file, userId);
+
+		let columns = await prisma.mutation.updateUserSchema(
+			{ data: { created: true }, where: { id: schemaId } },
+			"{ name rowCount columns { name } }"
 		);
-		return prisma.mutation.createFile({
-			data: {
-				filename,
-				mimetype,
-				encoding,
-				path,
-				owner: {
-					connect: {
-						id: userId
-					}
-				}
-			}
+
+		const keywords = columns.columns.map(item => item.name);
+		console.log(keywords);
+		const uploadPath = "/home/ubuntu/app/remody-server" + "/" + path;
+		const preprocResult = await pythonShell("preproc.py", [uploadPath]);
+		console.log(preprocResult);
+		const [compareResult] = await pythonShell("remody_compare.py", [
+			preprocResult[0],
+			...keywords
+		]);
+		console.log(compareResult);
+
+		if (compareResult === "NO") {
+			throw new Error("일치하는 키워드가 없습니다.");
+		}
+
+		const bulkData = fs.readFileSync(compareResult);
+		fs.unlinkSync(compareResult);
+		const json = JSON.parse(bulkData.toString());
+		console.log(json);
+
+		let attrs = [];
+		let values = [];
+		Object.entries(json).map(([attr, value]) => {
+			attrs = [...attrs, attr];
+			values = [...values, value];
 		});
+		const attstring = attrs.reduce((acc, string, index) => {
+			if (index === attrs.length - 1) {
+				return `${acc}${string}`;
+			}
+			return `${acc}${string},`;
+		}, "");
+		const valuestring = values.reduce((acc, string, index) => {
+			if (index === values.length - 1) {
+				return `${acc}"${string}"`;
+			}
+			return `${acc}"${string}",`;
+		}, "");
+		await query(
+			`INSERT INTO ${userId}_${
+				columns.name
+			} (${attstring}) VALUES (${valuestring}); `
+		);
+
+		await prisma.mutation.updateUserSchema({
+			data: { created: false, rowCount: columns.rowCount + 1 },
+			where: { id: schemaId }
+		});
+		return true;
 	},
 	async multipleUpload(parent, { files }, { prisma }, info) {
 		Promise.all(files.map(processUpload));
@@ -399,8 +448,7 @@ const Mutation = {
 		const copyPath = path.substr(0, path.indexOf(".pdf")) + "_copyed.pdf";
 		fs.copyFileSync(path, copyPath);
 
-		const uploadPath =
-			__dirname.substr(0, __dirname.indexOf("/src")) + "/" + copyPath;
+		const uploadPath = "/home/ubuntu/app/remody-server" + "/" + copyPath;
 		const pythonResult = await pythonShell("elastic.py", [
 			uploadPath,
 			title,
@@ -445,6 +493,80 @@ const Mutation = {
 			});
 		} catch (err) {
 			throw new Error(err);
+		}
+
+		return true;
+	},
+	async deleteUserSchema(
+		parent,
+		{ id: schemaId },
+		{ prisma, request },
+		info
+	) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const getSchema = await prisma.query.userSchema(
+			{
+				where: { id: schemaId }
+			},
+			"{ id name user { id } }"
+		);
+		if (!getSchema) {
+			throw new Error("No UserSchema found");
+		}
+		if (getSchema.user.id !== userId) {
+			throw new Error("You can't get Schema Info");
+		}
+		await query(`DROP TABLE ${userId}_${getSchema.name};`);
+		await prisma.mutation.deleteUserSchema({ where: { id: schemaId } });
+		return true;
+	},
+	async deletePaper(
+		parent,
+		{ id: paperId },
+		{ prisma, request, elastic },
+		info
+	) {
+		const header = request.headers.authorization;
+		const token = header.replace("Bearer ", "");
+		if (!header) {
+			throw new Error("Authentication Needed");
+		}
+		const { userId } = jwt.decode(token, process.env["REMODY_SECRET"]);
+		const paper = await prisma.query.paper(
+			{
+				where: { id: paperId }
+			},
+			"{ id url owner { id } }"
+		);
+		if (!paper) {
+			throw new Error("No Paper found");
+		}
+		if (paper.owner.id !== userId) {
+			throw new Error("You can't get Paper Info");
+		}
+		try {
+			fs.unlinkSync("/home/ubuntu/app/remody-server" + "/" + paper.url);
+		} catch (err) {
+			throw new Error(`file Error:\n${err}`);
+		}
+		try {
+			await elastic.delete({
+				index: "paper",
+				type: "metadata",
+				id: paper.id
+			});
+		} catch (err) {
+			throw new Error(`elastic Error:\n${err}`);
+		}
+		try {
+			await prisma.mutation.deletePaper({ where: { id: paperId } });
+		} catch (err) {
+			throw new Error(`Prisma Error:\n${err}`);
 		}
 
 		return true;

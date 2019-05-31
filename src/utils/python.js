@@ -5,7 +5,7 @@ export const pythonShell = function(filename, args) {
 		mode: "text",
 		pythonPath: "",
 		pythonOptions: ["-u"],
-		scriptPath: `${__dirname}/../python`,
+		scriptPath: "/home/ubuntu/app/remody-server/src/python",
 		args
 	};
 	return new Promise(function(resolve, reject) {

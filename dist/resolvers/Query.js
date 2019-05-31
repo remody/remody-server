@@ -25,6 +25,8 @@ var _pythonShell = require("python-shell");
 
 var _mysql = require("../utils/mysql");
 
+var _python = require("../utils/python");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Query = {
@@ -60,7 +62,6 @@ var Query = {
 		var _jwt$decode2 = _jsonwebtoken2.default.decode(args.token, process.env["REMODY_SECRET"]),
 		    userId = _jwt$decode2.userId;
 
-		console.log(userId);
 		return prisma.query.files({
 			where: {
 				owner: {
@@ -144,32 +145,47 @@ var Query = {
 								index: "paper",
 								body: {
 									query: {
-										match_all: {}
-									}
+										bool: {
+											must: [{
+												query_string: {
+													query: "논문"
+												}
+											}],
+											must_not: [],
+											should: []
+										}
+									},
+									from: 0,
+									size: 10,
+									sort: [],
+									aggs: {}
 								}
 							});
 
 						case 3:
 							result = _context2.sent;
 
-							console.log(result);
-							_context2.next = 10;
+							console.log(result.body);
+							console.log(result.body.hits.hits.map(function (item) {
+								return item._source;
+							}));
+							_context2.next = 11;
 							break;
 
-						case 7:
-							_context2.prev = 7;
+						case 8:
+							_context2.prev = 8;
 							_context2.t0 = _context2["catch"](0);
 							throw new Error(_context2.t0);
 
-						case 10:
+						case 11:
 							return _context2.abrupt("return", true);
 
-						case 11:
+						case 12:
 						case "end":
 							return _context2.stop();
 					}
 				}
-			}, _callee2, this, [[0, 7]]);
+			}, _callee2, this, [[0, 8]]);
 		}));
 
 		function elasticSearchConnection(_x4, _x5, _x6, _x7) {
@@ -178,46 +194,54 @@ var Query = {
 
 		return elasticSearchConnection;
 	}(),
-	pythonExample: function pythonExample(parent, args, _ref8, info) {
-		var prisma = _ref8.prisma;
+	pythonExample: function () {
+		var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(parent, args, ctx, info) {
+			var result;
+			return _regenerator2.default.wrap(function _callee3$(_context3) {
+				while (1) {
+					switch (_context3.prev = _context3.next) {
+						case 0:
+							_context3.next = 2;
+							return (0, _python.pythonShell)("example.py");
 
-		var options = {
-			mode: "text",
+						case 2:
+							result = _context3.sent;
 
-			pythonPath: "",
+							console.log(result);
 
-			pythonOptions: ["-u"],
+							return _context3.abrupt("return", true);
 
-			scriptPath: __dirname + "/../python",
+						case 5:
+						case "end":
+							return _context3.stop();
+					}
+				}
+			}, _callee3, this);
+		}));
 
-			args: ["value1", "value2", "value3"]
-		};
+		function pythonExample(_x8, _x9, _x10, _x11) {
+			return _ref8.apply(this, arguments);
+		}
 
-		_pythonShell.PythonShell.run("example.py", options, function (err, results) {
-			if (err) throw err;
-
-			console.log("results: %j", results);
-		});
-
-		return true;
-	},
+		return pythonExample;
+	}(),
 	UserSchemaInfo: function () {
-		var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(parent, _ref9, _ref10, info) {
+		var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(parent, _ref9, _ref10, info) {
 			var schemaId = _ref9.schemaId;
 			var request = _ref10.request,
 			    prisma = _ref10.prisma;
 
 			var header, token, _jwt$decode4, id, rightUserCheck, _ref12, _ref13, fieldQuery, rows, fields, _ref14, _ref15, nextId;
 
-			return _regenerator2.default.wrap(function _callee3$(_context3) {
+			return _regenerator2.default.wrap(function _callee4$(_context4) {
 				while (1) {
-					switch (_context3.prev = _context3.next) {
+					switch (_context4.prev = _context4.next) {
 						case 0:
 							header = request.headers.authorization;
 							token = header.replace("Bearer ", "");
 
 							if (header) {
-								_context3.next = 4;
+								_context4.next = 4;
 								break;
 							}
 
@@ -225,16 +249,16 @@ var Query = {
 
 						case 4:
 							_jwt$decode4 = _jsonwebtoken2.default.decode(token, process.env["REMODY_SECRET"]), id = _jwt$decode4.userId;
-							_context3.next = 7;
+							_context4.next = 7;
 							return prisma.query.userSchema({
 								where: { id: schemaId }
 							}, "{ id name user { id } }");
 
 						case 7:
-							rightUserCheck = _context3.sent;
+							rightUserCheck = _context4.sent;
 
 							if (rightUserCheck) {
-								_context3.next = 10;
+								_context4.next = 10;
 								break;
 							}
 
@@ -242,19 +266,19 @@ var Query = {
 
 						case 10:
 							if (!(rightUserCheck.user.id !== id)) {
-								_context3.next = 12;
+								_context4.next = 12;
 								break;
 							}
 
 							throw new Error("You can't get Schema Info");
 
 						case 12:
-							_context3.prev = 12;
-							_context3.next = 15;
+							_context4.prev = 12;
+							_context4.next = 15;
 							return Promise.all([(0, _mysql.query)("show full columns from " + id + "_" + rightUserCheck.name + ";"), (0, _mysql.query)("SELECT * FROM " + id + "_" + rightUserCheck.name + ";")]);
 
 						case 15:
-							_ref12 = _context3.sent;
+							_ref12 = _context4.sent;
 							_ref13 = (0, _slicedToArray3.default)(_ref12, 2);
 							fieldQuery = _ref13[0];
 							rows = _ref13[1];
@@ -263,49 +287,124 @@ var Query = {
 							});
 
 							if (!(rows.length >= 1)) {
-								_context3.next = 26;
+								_context4.next = 26;
 								break;
 							}
 
-							_context3.next = 23;
+							_context4.next = 23;
 							return (0, _mysql.query)("SELECT id FROM " + id + "_" + rightUserCheck.name + " ORDER BY id DESC LIMIT 1;");
 
 						case 23:
-							_context3.t0 = _context3.sent;
-							_context3.next = 27;
+							_context4.t0 = _context4.sent;
+							_context4.next = 27;
 							break;
 
 						case 26:
-							_context3.t0 = [{ id: 0 }];
+							_context4.t0 = [{ id: 0 }];
 
 						case 27:
-							_ref14 = _context3.t0;
+							_ref14 = _context4.t0;
 							_ref15 = (0, _slicedToArray3.default)(_ref14, 1);
 							nextId = _ref15[0].id;
-							return _context3.abrupt("return", {
+							return _context4.abrupt("return", {
 								fields: fields,
 								rows: rows,
 								nextId: nextId
 							});
 
 						case 33:
-							_context3.prev = 33;
-							_context3.t1 = _context3["catch"](12);
+							_context4.prev = 33;
+							_context4.t1 = _context4["catch"](12);
 							throw new Error("MySQL Error");
 
 						case 36:
 						case "end":
-							return _context3.stop();
+							return _context4.stop();
 					}
 				}
-			}, _callee3, this, [[12, 33]]);
+			}, _callee4, this, [[12, 33]]);
 		}));
 
-		function UserSchemaInfo(_x8, _x9, _x10, _x11) {
+		function UserSchemaInfo(_x12, _x13, _x14, _x15) {
 			return _ref11.apply(this, arguments);
 		}
 
 		return UserSchemaInfo;
+	}(),
+	papers: function () {
+		var _ref18 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(parent, _ref16, _ref17, info) {
+			var first = _ref16.first,
+			    after = _ref16.after,
+			    queryString = _ref16.queryString;
+			var prisma = _ref17.prisma,
+			    elastic = _ref17.elastic;
+			var args, result, ids;
+			return _regenerator2.default.wrap(function _callee5$(_context5) {
+				while (1) {
+					switch (_context5.prev = _context5.next) {
+						case 0:
+							args = { first: first };
+
+							if (after) {
+								args.after = after;
+							}
+
+							if (!queryString) {
+								_context5.next = 14;
+								break;
+							}
+
+							_context5.prev = 3;
+							_context5.next = 6;
+							return elastic.search({
+								index: "paper",
+								body: {
+									query: {
+										bool: {
+											must: [{
+												query_string: {
+													query: queryString
+												}
+											}],
+											must_not: [],
+											should: []
+										}
+									},
+									from: 0,
+									size: 100,
+									sort: [],
+									aggs: {}
+								}
+							});
+
+						case 6:
+							result = _context5.sent;
+							ids = result.body.hits.hits.map(function (item) {
+								return item._id;
+							});
+							return _context5.abrupt("return", prisma.query.papers({ first: first, where: { id_in: ids } }, info));
+
+						case 11:
+							_context5.prev = 11;
+							_context5.t0 = _context5["catch"](3);
+							throw new Error(_context5.t0);
+
+						case 14:
+							return _context5.abrupt("return", prisma.query.papers({ first: first }, info));
+
+						case 15:
+						case "end":
+							return _context5.stop();
+					}
+				}
+			}, _callee5, this, [[3, 11]]);
+		}));
+
+		function papers(_x16, _x17, _x18, _x19) {
+			return _ref18.apply(this, arguments);
+		}
+
+		return papers;
 	}()
 };
 

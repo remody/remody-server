@@ -2,6 +2,10 @@
 
 var _graphqlYoga = require("graphql-yoga");
 
+var _express = require("express");
+
+var _express2 = _interopRequireDefault(_express);
+
 var _Query = require("./resolvers/Query");
 
 var _Query2 = _interopRequireDefault(_Query);
@@ -46,6 +50,8 @@ var server = new _graphqlYoga.GraphQLServer({
 		};
 	}
 });
+
+server.express.use("/uploads", _express2.default.static("uploads"));
 
 server.start(function () {
 	console.log("The server is up!");

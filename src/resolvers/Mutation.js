@@ -316,6 +316,7 @@ const Mutation = {
 								id
 							}
 						},
+						rowCount: 0,
 						columns: {
 							create: data.rows
 						}
